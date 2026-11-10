@@ -1,0 +1,300 @@
+<!doctype html>
+<html lang="zh-Hant-TW">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="description" content="免費繁體中文十六型人格測驗，60 題約 10–15 分鐘，產出類型解析與結果圖卡。">
+<style>:root{padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}body{margin:0}img{max-width:100%}[hidden]{display:none!important}</style>
+<title>十六型人格測驗</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=LXGW+WenKai+TC:wght@400;700&family=Noto+Sans+TC:wght@400;500;700&family=Space+Grotesk:wght@500;700&display=swap">
+<style>
+/* Layout: single centered reading column (max 720px); quiz pages of 10 statements, then a result report */
+:root{
+  --bg:#f3f5f8; --surface:#ffffff; --fg:#1a2130; --muted:#5d6779; --line:#dde2ea;
+  --accent:#2f5d8a; --accent-soft:#e3ecf5; --agree:#2f8f6b; --disagree:#8a5a9e;
+  --nt:#6a4c93; --nf:#2f8f6b; --sj:#2f6fa8; --sp:#c27f12;
+  --f-display:"LXGW WenKai TC","Noto Sans TC",serif;
+  --f-body:"Noto Sans TC","PingFang TC","Microsoft JhengHei",sans-serif;
+  --f-code:"Space Grotesk","Noto Sans TC",sans-serif;
+}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){
+  --bg:#12161e; --surface:#1a202b; --fg:#e7ebf2; --muted:#9aa4b5; --line:#2c3443;
+  --accent:#7fb0e0; --accent-soft:#1f2f42; --agree:#5cc49c; --disagree:#c193d4;
+  --nt:#a98ad6; --nf:#5cc49c; --sj:#6fa8e0; --sp:#e5a845; color-scheme:dark}}
+:root[data-theme="dark"]{
+  --bg:#12161e; --surface:#1a202b; --fg:#e7ebf2; --muted:#9aa4b5; --line:#2c3443;
+  --accent:#7fb0e0; --accent-soft:#1f2f42; --agree:#5cc49c; --disagree:#c193d4;
+  --nt:#a98ad6; --nf:#5cc49c; --sj:#6fa8e0; --sp:#e5a845; color-scheme:dark}
+*{box-sizing:border-box}
+body{background:var(--bg);color:var(--fg);font-family:var(--f-body);font-size:16px;line-height:1.7;
+  padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));padding-block:0 48px}
+.wrap{max-width:720px;margin:0 auto}
+h1,h2,h3{font-family:var(--f-display);text-wrap:balance;line-height:1.3;margin:0}
+p{margin:0}
+button{font:inherit;cursor:pointer}
+button:focus-visible,.dot:focus-visible{outline:3px solid var(--accent);outline-offset:3px}
+
+/* intro */
+.intro{padding-block:48px 24px;display:grid;gap:20px}
+.eyebrow{font-size:13px;letter-spacing:.12em;color:var(--accent);font-weight:700}
+.intro h1{font-size:clamp(32px,7vw,48px)}
+.intro .lead{color:var(--muted);max-width:60ch}
+.facts{display:flex;flex-wrap:wrap;gap:8px 20px;font-size:14px;color:var(--muted)}
+.facts b{color:var(--fg);font-family:var(--f-code)}
+.dims{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px;margin-top:4px}
+.dim{background:var(--surface);border:1px solid var(--line);border-radius:10px;padding:14px 16px}
+.dim .pair{font-family:var(--f-code);font-weight:700;font-size:18px}
+.dim .q{font-size:14px;color:var(--muted)}
+.btn{border:0;border-radius:8px;padding:12px 24px;background:var(--accent);color:var(--bg);font-weight:700}
+.btn:disabled{opacity:.4;cursor:not-allowed}
+.btn.ghost{background:transparent;color:var(--fg);border:1px solid var(--line)}
+.row{display:flex;flex-wrap:wrap;gap:12px;align-items:center}
+.note{font-size:13px;color:var(--muted)}
+
+/* quiz */
+.bar{position:sticky;top:env(safe-area-inset-top,0px);z-index:5;background:var(--bg);padding-block:14px 10px;border-bottom:1px solid var(--line)}
+body::before{content:"";position:fixed;inset:0 0 auto;height:env(safe-area-inset-top,0px);z-index:10;background:var(--bg)}
+.bar .meta{display:flex;justify-content:space-between;font-size:13px;color:var(--muted);font-variant-numeric:tabular-nums}
+.track{height:6px;background:var(--line);border-radius:3px;margin-top:6px;overflow:hidden}
+.fill{height:100%;background:var(--accent);width:0;transition:width .3s}
+.qlist{display:grid;gap:0;margin-top:8px}
+.qi{padding-block:28px;border-bottom:1px solid var(--line);display:grid;gap:16px;transition:opacity .2s}
+.qi.done{opacity:.55}
+.qi.done:hover,.qi.done:focus-within{opacity:1}
+.qi .text{font-size:18px;font-weight:500;text-align:center}
+.qi .num{font-family:var(--f-code);color:var(--muted);font-size:13px;margin-right:6px}
+.scale{display:grid;grid-template-columns:auto 1fr auto;align-items:center;gap:10px}
+.scale .lab{font-size:13px;font-weight:700;white-space:nowrap}
+.lab.a{color:var(--agree)} .lab.d{color:var(--disagree)}
+.dots{display:flex;justify-content:space-between;align-items:center;gap:4px}
+.dot{border-radius:50%;border:2px solid;background:transparent;padding:0;flex:none;transition:background .15s,transform .15s}
+.dot:hover{transform:scale(1.08)}
+.dot.s3{width:44px;height:44px}.dot.s2{width:36px;height:36px}.dot.s1{width:29px;height:29px}.dot.s0{width:22px;height:22px}
+.dot.ag{border-color:var(--agree)}.dot.ag.on{background:var(--agree)}
+.dot.di{border-color:var(--disagree)}.dot.di.on{background:var(--disagree)}
+.dot.ne{border-color:var(--muted)}.dot.ne.on{background:var(--muted)}
+@media (max-width:460px){
+  .scale{grid-template-columns:1fr 1fr;row-gap:8px}
+  .dots{grid-column:1/-1;grid-row:1}
+  .lab.d{text-align:right}
+  .dot.s3{width:38px;height:38px}.dot.s2{width:32px;height:32px}.dot.s1{width:26px;height:26px}.dot.s0{width:20px;height:20px}
+}
+.nav{display:flex;justify-content:space-between;gap:12px;margin-top:28px}
+
+/* result */
+.hero{padding-block:40px 28px;display:grid;gap:10px;text-align:center;justify-items:center}
+.code{font-family:var(--f-code);font-weight:700;font-size:clamp(56px,16vw,96px);letter-spacing:.06em;line-height:1;color:var(--grp)}
+.hero h1{font-size:clamp(26px,6vw,36px)}
+.chip{display:inline-block;font-size:13px;font-weight:700;padding:3px 12px;border-radius:999px;color:var(--grp);border:1px solid var(--grp)}
+.hero .sum{max-width:56ch;color:var(--muted)}
+.sec{padding-block:24px;border-top:1px solid var(--line);display:grid;gap:14px}
+.sec h2{font-size:22px}
+.meter{display:grid;gap:6px}
+.meter .top{display:flex;justify-content:space-between;font-size:14px;font-variant-numeric:tabular-nums;gap:8px}
+.meter .top b{font-family:var(--f-code)}
+.meter .top .win{color:var(--grp)}
+.mtrack{position:relative;height:10px;border-radius:5px;background:var(--line);overflow:hidden}
+.mfill{position:absolute;top:0;bottom:0;background:var(--grp)}
+.mid{position:absolute;left:50%;top:-3px;bottom:-3px;width:2px;background:var(--bg)}
+.meter .desc{font-size:14px;color:var(--muted)}
+.cols{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:20px}
+@media (max-width:560px){.cols,.dims{grid-template-columns:1fr}}
+ul.list{margin:0;padding-left:1.2em;display:grid;gap:6px}
+.tags{display:flex;flex-wrap:wrap;gap:8px}
+.tag{font-size:14px;padding:4px 12px;border-radius:6px;background:var(--accent-soft)}
+.h3{font-size:17px;font-family:var(--f-display);font-weight:700}
+.toast{font-size:14px;color:var(--agree);min-height:1.5em}
+.card img{display:block;width:100%;max-width:480px;margin:0 auto;border-radius:12px;border:1px solid var(--line);aspect-ratio:4/5;background:var(--surface)}
+textarea{width:100%;min-height:160px;font:inherit;font-size:13px;background:var(--surface);color:var(--fg);border:1px solid var(--line);border-radius:8px;padding:10px}
+@media (prefers-reduced-motion:reduce){*{transition:none!important;scroll-behavior:auto!important}}
+</style>
+
+</head>
+<body>
+<div class="wrap" id="app"></div>
+
+<script>
+const DIMS={
+ EI:{a:'E',an:'外向',b:'I',bn:'內向',q:'你的能量從哪裡來？',
+   ad:'你從與人互動、參與外在活動中獲得能量，習慣邊說邊想、邊做邊調整。',
+   bd:'你從獨處與內在思考中恢復能量，習慣先想清楚再表達或行動。'},
+ SN:{a:'S',an:'實感',b:'N',bn:'直覺',q:'你如何接收資訊？',
+   ad:'你重視具體事實與親身經驗，關注當下與細節，偏好實用的做法。',
+   bd:'你重視整體模式與可能性，關注未來與意義，喜歡新點子和抽象概念。'},
+ TF:{a:'T',an:'思考',b:'F',bn:'情感',q:'你如何做決定？',
+   ad:'你做決定時以邏輯、客觀標準為主，重視公平與效率。',
+   bd:'你做決定時以價值觀與人的感受為主，重視和諧與體諒。'},
+ JP:{a:'J',an:'判斷',b:'P',bn:'感知',q:'你如何面對外在生活？',
+   ad:'你喜歡事先規劃、按部就班，事情有結論會讓你比較安心。',
+   bd:'你喜歡保留彈性、隨機應變，享受開放與探索的過程。'}
+};
+// [題目, 向度, 方向] 方向 +1 = 同意偏向第一個字母 (E/S/T/J)
+const RAW={
+EI:[['在聚會中，我通常會主動認識新朋友。',1],['和一大群人相處一整天後，我需要獨處來恢復精力。',-1],['我習慣邊說邊想，透過討論來整理想法。',1],['比起大型聚會，我更喜歡和一兩位好友深聊。',-1],['在團體中，我常是帶動氣氛的人。',1],['遇到問題時，我傾向先自己想清楚再跟別人說。',-1],['一個人在家過週末，讓我覺得很充實。',-1],['我很容易和陌生人聊起來。',1],['電話響起時，我會有點希望不用接。',-1],['參加活動時，我喜歡同時和很多人互動。',1],['在會議或課堂上，我常是第一個發言的人。',1],['比起當面溝通，我更喜歡用文字訊息。',-1],['太久沒有和人互動，我會覺得悶。',1],['常有人說「很難看出你在想什麼」。',-1],['我喜歡在熱鬧、有人走動的環境中工作。',1]],
+SN:[['我比較相信親身經驗，而不是理論推測。',1],['我常會想像未來可能發生的各種情境。',-1],['做事時，我習慣照著已經驗證有效的方法。',1],['我容易被抽象概念或哲學問題吸引。',-1],['我注意細節，常發現別人沒注意到的地方。',1],['讀書或看電影時，我更在意背後的象徵和意義。',-1],['描述事情時，我會說出具體的時間、地點和數字。',1],['我常有天馬行空的點子，但不一定會去實行。',-1],['我喜歡實用、能馬上派上用場的知識。',1],['我常在不同事物之間看出別人沒發現的關聯。',-1],['比起「可能會怎樣」，我更關心「現在是怎樣」。',1],['一成不變的例行工作，很快會讓我失去耐心。',-1],['學新東西時，我喜歡先看實際範例，再理解原理。',1],['我常會想「如果……會怎樣？」',-1],['別人常說我是腳踏實地、務實的人。',1]],
+TF:[['做決定時，我優先考慮邏輯和客觀事實。',1],['我很容易察覺別人的情緒變化。',-1],['我認為直接指出問題，比顧及對方感受更重要。',1],['看到別人難過時，我也會跟著難受。',-1],['爭論時，我在意的是誰的論點比較正確。',1],['做決定時，我會先考慮這對身邊的人有什麼影響。',-1],['別人說我有時太理性、不夠體貼。',1],['維持團體和諧，對我來說很重要。',-1],['我覺得規則應該一視同仁，不該因人情而例外。',1],['我很難拒絕別人的請求。',-1],['比起被喜歡，我更在意被認為有能力。',1],['給別人負面意見時，我會花很多心思斟酌用字。',-1],['我喜歡分析問題的原因，找出最有效率的解法。',1],['我常依照內心的價值觀和感覺來做選擇。',-1],['朋友找我傾訴時，我的第一反應是幫他想辦法解決。',1]],
+JP:[['我喜歡事先把行程規劃好。',1],['我常在截止日前才開始全力衝刺。',-1],['我的桌面和房間通常井然有序。',1],['旅行時，我喜歡隨興走，不排太滿的行程。',-1],['事情有明確結論後，我才會覺得安心。',1],['計畫臨時改變時，我通常能很快適應。',-1],['我習慣列待辦清單，並一項項完成。',1],['我喜歡保留選擇空間，不想太早做決定。',-1],['我會先把工作做完，再去玩。',1],['我常同時開始好幾件事，但不一定都完成。',-1],['守時對我來說很重要。',1],['規則和流程常讓我覺得被綁住。',-1],['做了決定之後，我很少再反覆更改。',1],['我覺得在壓力下臨場發揮，反而效率更好。',-1],['我會提前準備，避免最後一刻手忙腳亂。',1]]
+};
+const Q=[];for(let i=0;i<15;i++)for(const d of ['EI','SN','TF','JP'])Q.push({t:RAW[d][i][0],d,dir:RAW[d][i][1]});
+const PER=10,PAGES=Math.ceil(Q.length/PER);
+
+const GROUPS={NT:['理性分析型','--nt'],NF:['價值理想型','--nf'],SJ:['穩健守護型','--sj'],SP:['靈活探索型','--sp']};
+const T={
+INTJ:['遠見策略家','獨立、理性，擅長看見長遠的全局並規劃步驟。對自己和他人的標準都高，喜歡把複雜問題變成有系統的方案。',['能看見長期趨勢並擬定策略','獨立思考，不輕易隨波逐流','學習新領域的速度快','對目標有高度決心'],['容易顯得冷淡或不好親近','對效率低落的人事缺乏耐心','可能低估情緒在決策中的份量'],'喜歡自主度高、能深入鑽研的工作，討厭沒有意義的會議與繁文縟節。',['策略規劃','系統架構','研究員','數據分析','產品經理'],'重視少數深交，表達關心的方式常是「幫你解決問題」。需要對方理解他的獨處需求。',['提出結論前，先問問別人的感受與想法','接受「夠好」有時比「完美」更有價值','練習把思考過程說出來，讓別人跟得上']],
+INTP:['原理探究者','好奇心旺盛，喜歡拆解事物背後的原理。思考彈性大，享受理論與點子本身帶來的樂趣。',['分析力強，能抓出邏輯漏洞','思想開放，願意接受新觀點','擅長抽象思考與建立模型','面對問題冷靜客觀'],['常停在思考階段，不容易落實','容易疏忽日常瑣事與細節','有時忽略他人情緒，說話太直'],'適合需要解決複雜問題、允許自由探索的環境。',['程式設計','科學研究','學術工作','工程師','遊戲設計'],'對親近的人很忠誠，但不擅長主動表達情感；喜歡能和他一起天馬行空討論的人。',['替點子設定期限和第一步行動','練習用對方聽得懂的方式說明','定期整理生活上的待辦事項']],
+ENTJ:['目標推動者','果斷、有自信，傾向帶領團隊朝目標前進。擅長組織資源、做出決策並推動執行。',['決策迅速、敢於承擔','能把願景轉化為具體計畫','溝通直接、有說服力','高效率、重視成果'],['容易顯得強勢或不耐煩','可能忽略團隊成員的情緒與步調','不太容易承認自己的脆弱'],'在能主導、有明確目標與成長空間的環境中發揮最好。',['管理職','創業','專案經理','顧問','律師'],'對關係同樣投入，會規劃共同的未來；需要學會在親密關係中放下「管理者」的角色。',['決策前多聽一輪不同的意見','肯定別人的努力，而不只是成果','留時間休息，不把每件事都當成任務']],
+ENTP:['點子激盪者','反應快、愛挑戰，喜歡從不同角度切入問題。討論和辯論對他來說是一種樂趣，常帶來新鮮的想法。',['創意多、思考靈活','口才好，能快速抓到重點','不怕挑戰傳統做法','適應力強，面對變化不慌亂'],['容易三分鐘熱度，難以堅持到完成','辯論過頭可能讓人覺得不被尊重','對例行性工作缺乏耐心'],'適合變化多、能提案與創新的工作。',['行銷企劃','創業','媒體記者','顧問','產品開發'],'有趣、充滿驚喜，喜歡能互相激盪的對象；要留意別把爭論帶進感情。',['挑一個點子，堅持做到完成','爭論前先確認對方是否想討論','把執行細節交給擅長的夥伴，並尊重他們']],
+INFJ:['洞察引導者','安靜而有深度，擅長理解他人內心，懷抱讓世界更好的理想。外表溫和，內心有堅定的原則。',['洞察力強，能讀懂言外之意','有理想、有原則','善於傾聽與給予建議','能長期投入有意義的目標'],['容易承擔太多他人的情緒而累垮','對自己要求高，追求完美','被誤解時傾向默默切斷關係'],'適合能幫助他人、符合個人價值觀的工作。',['諮商輔導','教育','社工','寫作','人才發展'],'渴望深刻、真誠的連結，不喜歡表面社交；需要對方理解他偶爾需要獨處。',['學會說「不」，保留自己的能量','把期待說出口，不要等別人猜','允許計畫和人都有不完美']],
+INFP:['理想追尋者','溫柔、富有想像力，重視真實的自我與內心的價值。對美好事物敏感，常透過創作或關懷表達自己。',['同理心強，包容不同的人','創意與想像力豐富','忠於自己的價值觀','擅長用文字或藝術表達情感'],['容易理想化，遇到落差時感到失落','面對衝突傾向逃避','不擅長安排實際事務與時間'],'適合有意義、能發揮創意且彈性較大的工作。',['設計','寫作編輯','心理相關','插畫藝術','非營利組織'],'浪漫、真誠，對感情投入很深；需要被接納真實的樣子。',['把大夢想拆成今天能完成的小步驟','練習及早表達不滿，不要累積','對自己溫柔一點，別太苛責']],
+ENFJ:['熱忱帶領者','有感染力、樂於助人，擅長凝聚大家並激發他人的潛能。很在意團體的和諧與每個人的成長。',['溝通與鼓舞人心的能力強','善於察覺團隊需求','有責任感、組織力好','真心希望他人變得更好'],['太在意別人的看法','容易忽略自己的需要','可能過度介入他人的選擇'],'適合與人合作、能帶領或培育他人的角色。',['教師講師','人力資源','公關','組織管理','業務主管'],'體貼、主動經營關係；要記得也讓對方有機會照顧你。',['每週留一段只屬於自己的時間','接受不是每個人都需要你的幫忙','遇到批評時，先分辨是對事還是對人']],
+ENFP:['靈感火花家','熱情、好奇，總能在生活中找到新的可能。善於和人建立連結，把能量和樂觀帶給身邊的人。',['熱情、有感染力','點子多、想像力豐富','善於社交、容易交朋友','能看見他人的優點'],['興趣多但容易分心','不擅長細節與重複性工作','情緒起伏可能比較大'],'喜歡有創意、能接觸人、變化多的工作。',['行銷企劃','活動策劃','教育','媒體創作','創業'],'溫暖熱情，喜歡分享生活；需要對方給他探索的空間。',['用清單或番茄鐘幫自己專注','答應之前先評估時間和精力','熱度退去時，回想當初的初衷']],
+ISTJ:['可靠執行者','踏實、負責，做事一步一腳印。重視規則與承諾，是團隊中最讓人放心的人。',['負責任、說到做到','注重細節、做事精確','有條理、善於規劃流程','冷靜穩定，面對壓力不慌'],['對改變和新方法較抗拒','可能顯得固執、不夠變通','不太擅長表達情緒'],'適合結構清楚、重視準確度的工作。',['會計財務','行政管理','工程','品質管理','公務人員'],'用實際行動表達愛，忠誠可靠；可以試著多用言語表達關心。',['試著用新方法完成一件小事','先聽完別人的想法再判斷','偶爾說出感謝與感受']],
+ISFJ:['細心守護者','溫和、體貼，默默照顧身邊的人。記得別人的小細節，重視傳統與穩定。',['細心體貼，觀察入微','可靠、有耐心','務實，能把事情做得周到','重視團隊與家庭'],['容易委屈自己、不好意思拒絕','對變動感到不安','付出不被看見時容易受傷'],'適合能照顧他人、步調穩定的工作。',['護理醫療','教育','行政支援','客戶服務','社工'],'溫柔忠誠，會默默記得對方的喜好；自己也需要被看見與感謝。',['練習直接說出自己的需求','把「別人的期待」和「自己的責任」分開','給新事物一點機會']],
+ESTJ:['秩序管理者','務實、有組織力，擅長建立規則和流程讓事情順利運作。直接坦率，重視效率與責任。',['組織與執行力強','做事有效率、重結果','誠實直接、值得信賴','能清楚分配任務'],['對不同做法缺乏彈性','說話可能太直，讓人感到壓力','容易忽略情緒面的需求'],'適合需要管理、制度與明確成果的職位。',['管理職','營運','財務','法律','軍警'],'重視承諾與責任，會為家人打點一切；可以多保留一些彈性與浪漫。',['決定前先問「還有其他做法嗎？」','給回饋時先肯定、再建議','允許別人用自己的方式完成']],
+ESFJ:['溫暖協調者','熱心、合群，樂於照顧大家的需要。擅長營造和諧氣氛，是團體裡的黏著劑。',['熱心助人、善於照顧','人際關係良好','有責任感、可靠','擅長協調與安排活動'],['太在意別人的評價','不容易接受批評','可能為了和諧而壓抑自己的意見'],'適合與人接觸、分工明確的環境。',['教育','醫護','人力資源','活動企劃','客戶服務'],'體貼周到，重視節日與儀式感；需要對方給予肯定與回應。',['不必讓每個人都滿意','把批評當成資訊，而不是否定','練習說出不同的意見']],
+ISTP:['冷靜工匠','冷靜、務實，喜歡動手了解事物如何運作。遇到突發狀況反應快，擅長找出實際的解法。',['冷靜沉著、臨危不亂','動手與解決問題的能力強','獨立、有效率','觀察力敏銳'],['不喜歡長期承諾與規劃','不擅長表達情感','容易對無聊的事失去興趣'],'適合能動手操作、自由度高的工作。',['工程技術','機械維修','資訊安全','運動相關','消防救護'],'給彼此空間，用行動陪伴；可以多分享一些內心的想法。',['試著設定一個長期目標','用簡單的話說出自己的感受','做決定前想想對他人的影響']],
+ISFP:['自在創作者','溫和、敏感，活在當下並享受生活中的美感。不愛張揚，但有自己獨特的品味與堅持。',['審美敏銳、富有藝術感','溫柔包容、不批判他人','活在當下、懂得享受','適應力好'],['不喜歡規劃未來','遇到衝突傾向退縮','容易低估自己的能力'],'適合有創作空間、氣氛和諧的工作。',['設計','攝影','手作工藝','美容美髮','動物照護'],'溫柔體貼，用行動和小驚喜表達愛；需要被尊重、不被催促。',['替重要的事加一點結構','練習在衝突中表達立場','讓別人看見你的作品和想法']],
+ESTP:['行動實踐家','精力充沛、反應快，喜歡從做中學。擅長觀察現場狀況，抓住機會立即行動。',['行動力強、敢冒險','臨場反應與談判能力好','務實，重視實際效果','幽默、善於社交'],['容易衝動，忽略長期後果','對理論與規劃缺乏耐心','可能不經意說話傷人'],'適合節奏快、能直接看到成果的工作。',['業務','創業','運動教練','警消救護','活動執行'],'有趣、愛冒險，帶來很多新鮮體驗；要留意對方是否需要更多穩定感。',['重要決定前停一下，想想三個月後','培養一項需要長期累積的技能','說話前想想對方的感受']],
+ESFP:['舞台活力家','開朗、熱情，喜歡和人一起享受生活。天生有表演魅力，能讓周遭氣氛熱絡起來。',['樂觀開朗、帶動氣氛','善於觀察他人需求','務實、懂得享受當下','適應力強'],['不喜歡長期規劃','容易受情緒與誘惑影響','面對嚴肅問題時傾向逃避'],'適合與人互動、有表現機會的工作。',['表演藝術','活動主持','業務','餐飲服務','幼兒教育'],'熱情慷慨，喜歡一起體驗新事物；也要學著面對關係中的難題。',['每月設定一個小儲蓄或學習目標','遇到問題先處理，再放鬆','給自己安靜反思的時間']]
+};
+
+const KEY='mbti16-tc-v1';
+let S={view:'intro',page:0,ans:Array(Q.length).fill(null)};
+try{const s=JSON.parse(localStorage.getItem(KEY)||'null');if(s&&Array.isArray(s.ans)&&s.ans.length===Q.length)S=s;}catch(e){}
+const save=()=>{try{localStorage.setItem(KEY,JSON.stringify(S))}catch(e){}};
+const app=document.getElementById('app');
+const answered=()=>S.ans.filter(v=>v!==null).length;
+const reduce=matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+function render(){({intro,quiz,result})[S.view]();}
+
+function intro(){
+  const n=answered();
+  app.innerHTML=`<section class="intro">
+    <div class="eyebrow">免費・繁體中文・約 10–15 分鐘</div>
+    <h1>十六型人格測驗</h1>
+    <p class="lead">共 60 題。請依照你「平常、自然的樣子」作答，而不是你希望自己成為的樣子。沒有對錯，第一直覺通常最準。</p>
+    <div class="facts"><span><b>60</b> 題</span><span><b>4</b> 個向度</span><span><b>16</b> 種類型</span><span>作答進度會自動保存在此瀏覽器</span></div>
+    <div class="dims">${Object.values(DIMS).map(d=>`<div class="dim"><div class="pair">${d.a} ${d.an} ／ ${d.b} ${d.bn}</div><div class="q">${d.q}</div></div>`).join('')}</div>
+    <div class="row">
+      <button class="btn" id="go">${n?`繼續作答（已完成 ${n} 題）`:'開始測驗'}</button>
+      ${n?'<button class="btn ghost" id="reset">重新開始</button>':''}
+    </div>
+    <p class="note">本測驗依據榮格心理類型理論設計，供自我探索與教學討論使用，並非官方 MBTI®，也不適合作為招募或診斷依據。</p>
+  </section>`;
+  document.getElementById('go').onclick=()=>{S.view=n===Q.length?'result':'quiz';save();render();scrollTo(0,0)};
+  const r=document.getElementById('reset');if(r)r.onclick=reset;
+}
+
+function reset(){S={view:'quiz',page:0,ans:Array(Q.length).fill(null)};save();render();scrollTo(0,0);}
+
+const VALS=[3,2,1,0,-1,-2,-3];
+function quiz(){
+  const start=S.page*PER,items=Q.slice(start,start+PER);
+  app.innerHTML=`<div class="bar"><div class="meta"><span>第 ${S.page+1} / ${PAGES} 頁</span><span id="cnt"></span></div><div class="track"><div class="fill" id="fill"></div></div></div>
+  <div class="qlist">${items.map((q,k)=>{const i=start+k;return `<div class="qi${S.ans[i]!==null?' done':''}" id="q${i}">
+    <p class="text"><span class="num">${i+1}</span>${q.t}</p>
+    <div class="scale"><span class="lab a">同意</span>
+      <div class="dots" role="radiogroup" aria-label="第${i+1}題">${VALS.map(v=>{const c=v>0?'ag':v<0?'di':'ne';return `<button class="dot s${Math.abs(v)} ${c}${S.ans[i]===v?' on':''}" role="radio" aria-checked="${S.ans[i]===v}" aria-label="${['非常同意','同意','有點同意','中立','有點不同意','不同意','非常不同意'][3-v]}" data-i="${i}" data-v="${v}"></button>`}).join('')}</div>
+      <span class="lab d">不同意</span></div></div>`}).join('')}</div>
+  <div class="nav"><button class="btn ghost" id="prev">${S.page?'上一頁':'回首頁'}</button><button class="btn" id="next">${S.page===PAGES-1?'看結果':'下一頁'}</button></div>
+  <p class="note" style="margin-top:12px;text-align:center">中間的小圓圈代表「中立」，請盡量少用。</p>`;
+  const upd=()=>{const n=answered();document.getElementById('cnt').textContent=`已完成 ${n} / ${Q.length}`;document.getElementById('fill').style.width=(n/Q.length*100)+'%';
+    document.getElementById('next').disabled=items.some((_,k)=>S.ans[start+k]===null);};
+  upd();
+  app.querySelectorAll('.dot').forEach(b=>b.onclick=()=>{
+    const i=+b.dataset.i,v=+b.dataset.v,first=S.ans[i]===null;S.ans[i]=v;save();
+    const box=document.getElementById('q'+i);box.classList.add('done');
+    box.querySelectorAll('.dot').forEach(d=>{const on=+d.dataset.v===v;d.classList.toggle('on',on);d.setAttribute('aria-checked',on)});
+    upd();
+    if(first){for(let j=i+1;j<start+items.length;j++){if(S.ans[j]===null){const el=document.getElementById('q'+j);const y=el.getBoundingClientRect().top+scrollY-110;scrollTo({top:y,behavior:reduce?'auto':'smooth'});break;}}}
+  });
+  document.getElementById('prev').onclick=()=>{if(S.page)S.page--;else S.view='intro';save();render();scrollTo(0,0)};
+  document.getElementById('next').onclick=()=>{if(S.page<PAGES-1){S.page++;}else{S.view='result';}save();render();scrollTo(0,0)};
+}
+
+function score(){
+  const out={};
+  for(const d in DIMS){let s=0;Q.forEach((q,i)=>{if(q.d===d)s+=(S.ans[i]||0)*q.dir});
+    const pa=Math.round(50+s/45*50);out[d]={pa,pb:100-pa,win:pa>=50?DIMS[d].a:DIMS[d].b};}
+  return out;
+}
+const level=p=>{const x=Math.abs(p-50);return x<10?'輕微偏好':x<25?'中等偏好':x<40?'明顯偏好':'非常明顯'};
+function group(code){return code[1]==='N'?(code[2]==='T'?'NT':'NF'):(code[3]==='J'?'SJ':'SP');}
+
+function result(){
+  const sc=score(),code=Object.keys(DIMS).map(d=>sc[d].win).join(''),t=T[code],g=group(code);
+  app.style.setProperty('--grp',`var(${GROUPS[g][1]})`);
+  const meters=Object.entries(DIMS).map(([k,d])=>{const r=sc[k],aw=r.win===d.a;const p=aw?r.pa:r.pb;
+    const fill=aw?`right:50%;width:${p-50}%`:`left:50%;width:${p-50}%`;
+    return `<div class="meter"><div class="top"><span class="${aw?'win':''}"><b>${d.a}</b> ${d.an} ${r.pa}%</span><span style="color:var(--muted)">${level(p)}</span><span class="${aw?'':'win'}">${r.pb}% ${d.bn} <b>${d.b}</b></span></div>
+    <div class="mtrack"><div class="mfill" style="${fill}"></div><div class="mid"></div></div>
+    <p class="desc">${aw?d.ad:d.bd}${Math.abs(p-50)<10?' 這個向度兩邊很接近，你可能會依情境在兩者之間切換。':''}</p></div>`}).join('');
+  app.innerHTML=`<section class="hero">
+    <span class="chip">${GROUPS[g][0]}</span>
+    <div class="code">${code}</div>
+    <h1>${t[0]}</h1>
+    <p class="sum">${t[1]}</p></section>
+  <section class="sec"><h2>四個向度的分數</h2>${meters}</section>
+  <section class="sec"><div class="cols">
+    <div><p class="h3">你的優勢</p><ul class="list">${t[2].map(x=>`<li>${x}</li>`).join('')}</ul></div>
+    <div><p class="h3">需要留意的盲點</p><ul class="list">${t[3].map(x=>`<li>${x}</li>`).join('')}</ul></div></div></section>
+  <section class="sec"><h2>工作與職涯</h2><p>${t[4]}</p><div class="tags">${t[5].map(x=>`<span class="tag">${x}</span>`).join('')}</div>
+    <p class="note">職業僅供參考。任何類型都能在各種領域表現出色，興趣與能力同樣重要。</p></section>
+  <section class="sec"><h2>人際與感情</h2><p>${t[6]}</p></section>
+  <section class="sec"><h2>成長建議</h2><ul class="list">${t[7].map(x=>`<li>${x}</li>`).join('')}</ul></section>
+  <section class="sec"><h2>結果圖卡</h2><p class="note">手機請長按圖片選「儲存圖片」；電腦請在圖片上按右鍵「另存圖片」。</p><div class="card"><img id="cardimg" alt="${code} ${t[0]} 結果圖卡"></div></section>
+  <section class="sec"><h2>文字版解析</h2><p class="note">複製下方文字，即可貼到筆記或傳給朋友。</p>
+    <textarea id="txt" readonly></textarea>
+    <div class="row"><button class="btn" id="copy">複製解析</button><button class="btn ghost" id="redo">重新測驗</button><button class="btn ghost" id="edit">修改答案</button></div>
+    <p class="toast" id="toast" aria-live="polite"></p>
+    <p class="note">提醒：人格類型描述的是偏好，不是能力或限制。結果可能隨年齡、環境與心境改變，建議當作認識自己的起點。</p></section>`;
+  const txt=`【十六型人格測驗結果】\n類型：${code}｜${t[0]}（${GROUPS[g][0]}）\n${t[1]}\n\n向度分數：\n`+
+    Object.entries(DIMS).map(([k,d])=>`・${d.a} ${d.an} ${sc[k].pa}% ／ ${d.b} ${d.bn} ${sc[k].pb}%`).join('\n')+
+    `\n\n優勢：${t[2].join('、')}\n盲點：${t[3].join('、')}\n工作：${t[4]}\n適合方向：${t[5].join('、')}\n人際：${t[6]}\n成長建議：\n${t[7].map((x,i)=>`${i+1}. ${x}`).join('\n')}`;
+  const ta=document.getElementById('txt');ta.value=txt;
+  document.getElementById('copy').onclick=()=>{const toast=document.getElementById('toast');
+    navigator.clipboard.writeText(txt).then(()=>toast.textContent='已複製到剪貼簿').catch(()=>{ta.focus();ta.select();toast.textContent='已選取文字，請按 Ctrl/⌘ + C 複製'});};
+  document.getElementById('redo').onclick=reset;
+  makeCard(code,t,g,sc).then(u=>{document.getElementById('cardimg').src=u}).catch(()=>{});
+  document.getElementById('edit').onclick=()=>{S.view='quiz';S.page=0;save();render();scrollTo(0,0)};
+}
+function rr(x,X,Y,w,h,r){x.beginPath();x.moveTo(X+r,Y);x.arcTo(X+w,Y,X+w,Y+h,r);x.arcTo(X+w,Y+h,X,Y+h,r);x.arcTo(X,Y+h,X,Y,r);x.arcTo(X,Y,X+w,Y,r);x.closePath();}
+function wrapText(x,text,maxW){const P='，。、；：！？）」』';const lines=[];let cur='';for(const ch of text){if(cur&&!P.includes(ch)&&x.measureText(cur+ch).width>maxW){lines.push(cur);cur=ch;}else cur+=ch;}if(cur)lines.push(cur);return lines;}
+async function makeCard(code,t,g,sc){
+  const W=1080,H=1350,pad=80,c=document.createElement('canvas');c.width=W;c.height=H;const x=c.getContext('2d');
+  const DISP='"LXGW WenKai TC","Noto Sans TC",serif',BODY='"Noto Sans TC","PingFang TC","Microsoft JhengHei",sans-serif',CODE='"Space Grotesk",sans-serif';
+  try{await Promise.all(['700 72px '+DISP,'700 220px '+CODE,'400 32px '+BODY,'700 30px '+BODY].map(f=>document.fonts.load(f,'測驗型人格ABCDEFGHIJ0123')));}catch(e){}
+  const col={NT:'#6a4c93',NF:'#2f8f6b',SJ:'#2f6fa8',SP:'#c27f12'}[g],ink='#1a2130',muted='#5d6779';
+  x.fillStyle='#f7f8fb';x.fillRect(0,0,W,H);
+  x.globalAlpha=.08;x.fillStyle=col;x.beginPath();x.arc(W-40,150,320,0,Math.PI*2);x.fill();x.globalAlpha=1;
+  x.fillStyle=col;x.fillRect(0,0,W,14);
+  x.textBaseline='middle';
+  x.font='500 30px '+BODY;x.fillStyle=muted;x.textAlign='left';x.fillText('十六型人格測驗',pad,104);
+  x.font='700 28px '+BODY;const gw=x.measureText(GROUPS[g][0]).width+44;rr(x,W-pad-gw,80,gw,50,25);x.strokeStyle=col;x.lineWidth=3;x.stroke();x.fillStyle=col;x.textAlign='center';x.fillText(GROUPS[g][0],W-pad-gw/2,106);
+  x.textAlign='left';x.textBaseline='alphabetic';
+  x.font='700 220px '+CODE;x.fillStyle=col;x.fillText(code,pad-8,360);
+  x.font='700 72px '+DISP;x.fillStyle=ink;x.fillText(t[0],pad,478);
+  x.font='400 32px '+BODY;x.fillStyle=muted;wrapText(x,t[1],W-pad*2).slice(0,3).forEach((l,i)=>x.fillText(l,pad,552+i*52));
+  x.fillStyle='#dde2ea';x.fillRect(pad,680,W-pad*2,2);
+  let y=738;const bw=W-pad*2;
+  for(const [k,d] of Object.entries(DIMS)){const r=sc[k],aw=r.win===d.a,p=aw?r.pa:r.pb;
+    x.font=(aw?'700 ':'400 ')+'30px '+BODY;x.fillStyle=aw?col:muted;x.textAlign='left';x.fillText(d.a+' '+d.an+' '+r.pa+'%',pad,y);
+    x.font=(aw?'400 ':'700 ')+'30px '+BODY;x.fillStyle=aw?muted:col;x.textAlign='right';x.fillText(r.pb+'% '+d.bn+' '+d.b,W-pad,y);
+    x.font='400 24px '+BODY;x.fillStyle=muted;x.textAlign='center';x.fillText(level(p),W/2,y);
+    rr(x,pad,y+18,bw,16,8);x.fillStyle='#e3e7ee';x.fill();
+    const fw=(p-50)/100*bw;x.fillStyle=col;if(fw>0){if(aw)x.fillRect(W/2-fw,y+18,fw,16);else x.fillRect(W/2,y+18,fw,16);}
+    x.fillStyle='#f7f8fb';x.fillRect(W/2-2,y+12,4,28);y+=88;}
+  x.textAlign='left';x.font='700 30px '+DISP;x.fillStyle=ink;x.fillText('你的優勢',pad,1098);
+  x.font='500 28px '+BODY;let tx=pad,ty=1124;
+  for(const s of t[2]){const w=x.measureText(s).width+40;if(tx+w>W-pad){tx=pad;ty+=70;}rr(x,tx,ty,w,54,10);x.fillStyle=col+'1f';x.fill();x.fillStyle=col;x.textBaseline='middle';x.fillText(s,tx+20,ty+28);x.textBaseline='alphabetic';tx+=w+14;}
+  x.font='400 22px '+BODY;x.fillStyle=muted;x.textAlign='center';x.fillText('以榮格心理類型理論為基礎・僅供自我探索參考',W/2,H-40);
+  return c.toDataURL('image/png');
+}
+render();
+</script>
+
+</body>
+</html>
