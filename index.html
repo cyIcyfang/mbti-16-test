@@ -3,14 +3,14 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-<meta name="description" content="免費繁體中文十六型人格測驗，60 題約 10–15 分鐘，產出類型解析與結果圖卡。">
+<meta name="description" content="免費十六型人格測驗（繁中／简中／English），60 題約 10–15 分鐘，產出類型解析與結果圖卡。">
 <style>:root{padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}body{margin:0}img{max-width:100%}[hidden]{display:none!important}</style>
 <title>十六型人格測驗</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=LXGW+WenKai+TC:wght@400;700&family=Noto+Sans+TC:wght@400;500;700&family=Space+Grotesk:wght@500;700&display=swap">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700&family=LXGW+WenKai+TC:wght@400;700&family=Noto+Sans+SC:wght@400;500;700&family=Noto+Sans+TC:wght@400;500;700&family=Noto+Serif+SC:wght@700&family=Space+Grotesk:wght@500;700&display=swap">
 <style>
-/* Layout: single centered reading column (max 720px); quiz pages of 10 statements, then a result report */
+/* Layout: single centered reading column (max 720px); language switch on top, quiz pages of 10 statements, then a result report */
 :root{
   --bg:#f3f5f8; --surface:#ffffff; --fg:#1a2130; --muted:#5d6779; --line:#dde2ea;
   --accent:#2f5d8a; --accent-soft:#e3ecf5; --agree:#2f8f6b; --disagree:#8a5a9e;
@@ -19,6 +19,8 @@
   --f-body:"Noto Sans TC","PingFang TC","Microsoft JhengHei",sans-serif;
   --f-code:"Space Grotesk","Noto Sans TC",sans-serif;
 }
+:root[lang^="zh-Hans"]{--f-display:"Noto Serif SC","Noto Sans SC",serif;--f-body:"Noto Sans SC","PingFang SC","Microsoft YaHei",sans-serif;--f-code:"Space Grotesk","Noto Sans SC",sans-serif}
+:root[lang="en"]{--f-display:"Space Grotesk","Inter",sans-serif;--f-body:"Inter","Helvetica Neue",Arial,sans-serif;--f-code:"Space Grotesk","Inter",sans-serif}
 @media (prefers-color-scheme: dark){:root:not([data-theme="light"]){
   --bg:#12161e; --surface:#1a202b; --fg:#e7ebf2; --muted:#9aa4b5; --line:#2c3443;
   --accent:#7fb0e0; --accent-soft:#1f2f42; --agree:#5cc49c; --disagree:#c193d4;
@@ -36,8 +38,14 @@ p{margin:0}
 button{font:inherit;cursor:pointer}
 button:focus-visible,.dot:focus-visible{outline:3px solid var(--accent);outline-offset:3px}
 
+.top{display:flex;justify-content:flex-end;padding-top:16px}
+.lang{display:inline-flex;border:1px solid var(--line);border-radius:8px;overflow:hidden;background:var(--surface)}
+.lang button{border:0;background:transparent;color:var(--muted);padding:6px 14px;font-size:13px;font-weight:500;font-family:var(--f-body)}
+.lang button+button{border-left:1px solid var(--line)}
+.lang button[aria-pressed="true"]{background:var(--accent);color:var(--bg)}
+
 /* intro */
-.intro{padding-block:48px 24px;display:grid;gap:20px}
+.intro{padding-block:24px 24px;display:grid;gap:20px}
 .eyebrow{font-size:13px;letter-spacing:.12em;color:var(--accent);font-weight:700}
 .intro h1{font-size:clamp(32px,7vw,48px)}
 .intro .lead{color:var(--muted);max-width:60ch}
@@ -45,7 +53,7 @@ button:focus-visible,.dot:focus-visible{outline:3px solid var(--accent);outline-
 .facts b{color:var(--fg);font-family:var(--f-code)}
 .dims{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px;margin-top:4px}
 .dim{background:var(--surface);border:1px solid var(--line);border-radius:10px;padding:14px 16px}
-.dim .pair{font-family:var(--f-code);font-weight:700;font-size:18px}
+.dim .pair{font-family:var(--f-code);font-weight:700;font-size:17px}
 .dim .q{font-size:14px;color:var(--muted)}
 .btn{border:0;border-radius:8px;padding:12px 24px;background:var(--accent);color:var(--bg);font-weight:700}
 .btn:disabled{opacity:.4;cursor:not-allowed}
@@ -84,7 +92,7 @@ body::before{content:"";position:fixed;inset:0 0 auto;height:env(safe-area-inset
 .nav{display:flex;justify-content:space-between;gap:12px;margin-top:28px}
 
 /* result */
-.hero{padding-block:40px 28px;display:grid;gap:10px;text-align:center;justify-items:center}
+.hero{padding-block:28px 28px;display:grid;gap:10px;text-align:center;justify-items:center}
 .code{font-family:var(--f-code);font-weight:700;font-size:clamp(56px,16vw,96px);letter-spacing:.06em;line-height:1;color:var(--grp)}
 .hero h1{font-size:clamp(26px,6vw,36px)}
 .chip{display:inline-block;font-size:13px;font-weight:700;padding:3px 12px;border-radius:999px;color:var(--grp);border:1px solid var(--grp)}
@@ -92,9 +100,9 @@ body::before{content:"";position:fixed;inset:0 0 auto;height:env(safe-area-inset
 .sec{padding-block:24px;border-top:1px solid var(--line);display:grid;gap:14px}
 .sec h2{font-size:22px}
 .meter{display:grid;gap:6px}
-.meter .top{display:flex;justify-content:space-between;font-size:14px;font-variant-numeric:tabular-nums;gap:8px}
-.meter .top b{font-family:var(--f-code)}
-.meter .top .win{color:var(--grp)}
+.meter .top2{display:flex;justify-content:space-between;font-size:14px;font-variant-numeric:tabular-nums;gap:8px;flex-wrap:wrap}
+.meter .top2 b{font-family:var(--f-code)}
+.meter .top2 .win{color:var(--grp)}
 .mtrack{position:relative;height:10px;border-radius:5px;background:var(--line);overflow:hidden}
 .mfill{position:absolute;top:0;bottom:0;background:var(--grp)}
 .mid{position:absolute;left:50%;top:-3px;bottom:-3px;width:2px;background:var(--bg)}
@@ -113,76 +121,55 @@ textarea{width:100%;min-height:160px;font:inherit;font-size:13px;background:var(
 
 </head>
 <body>
-<div class="wrap" id="app"></div>
+<div class="wrap">
+  <div class="top"><div class="lang" role="group" aria-label="Language / 語言">
+    <button data-lang="zh-Hant">繁中</button><button data-lang="zh-Hans">简中</button><button data-lang="en">EN</button>
+  </div></div>
+  <div id="app"></div>
+</div>
 
 <script>
-const DIMS={
- EI:{a:'E',an:'外向',b:'I',bn:'內向',q:'你的能量從哪裡來？',
-   ad:'你從與人互動、參與外在活動中獲得能量，習慣邊說邊想、邊做邊調整。',
-   bd:'你從獨處與內在思考中恢復能量，習慣先想清楚再表達或行動。'},
- SN:{a:'S',an:'實感',b:'N',bn:'直覺',q:'你如何接收資訊？',
-   ad:'你重視具體事實與親身經驗，關注當下與細節，偏好實用的做法。',
-   bd:'你重視整體模式與可能性，關注未來與意義，喜歡新點子和抽象概念。'},
- TF:{a:'T',an:'思考',b:'F',bn:'情感',q:'你如何做決定？',
-   ad:'你做決定時以邏輯、客觀標準為主，重視公平與效率。',
-   bd:'你做決定時以價值觀與人的感受為主，重視和諧與體諒。'},
- JP:{a:'J',an:'判斷',b:'P',bn:'感知',q:'你如何面對外在生活？',
-   ad:'你喜歡事先規劃、按部就班，事情有結論會讓你比較安心。',
-   bd:'你喜歡保留彈性、隨機應變，享受開放與探索的過程。'}
-};
-// [題目, 向度, 方向] 方向 +1 = 同意偏向第一個字母 (E/S/T/J)
-const RAW={
-EI:[['在聚會中，我通常會主動認識新朋友。',1],['和一大群人相處一整天後，我需要獨處來恢復精力。',-1],['我習慣邊說邊想，透過討論來整理想法。',1],['比起大型聚會，我更喜歡和一兩位好友深聊。',-1],['在團體中，我常是帶動氣氛的人。',1],['遇到問題時，我傾向先自己想清楚再跟別人說。',-1],['一個人在家過週末，讓我覺得很充實。',-1],['我很容易和陌生人聊起來。',1],['電話響起時，我會有點希望不用接。',-1],['參加活動時，我喜歡同時和很多人互動。',1],['在會議或課堂上，我常是第一個發言的人。',1],['比起當面溝通，我更喜歡用文字訊息。',-1],['太久沒有和人互動，我會覺得悶。',1],['常有人說「很難看出你在想什麼」。',-1],['我喜歡在熱鬧、有人走動的環境中工作。',1]],
-SN:[['我比較相信親身經驗，而不是理論推測。',1],['我常會想像未來可能發生的各種情境。',-1],['做事時，我習慣照著已經驗證有效的方法。',1],['我容易被抽象概念或哲學問題吸引。',-1],['我注意細節，常發現別人沒注意到的地方。',1],['讀書或看電影時，我更在意背後的象徵和意義。',-1],['描述事情時，我會說出具體的時間、地點和數字。',1],['我常有天馬行空的點子，但不一定會去實行。',-1],['我喜歡實用、能馬上派上用場的知識。',1],['我常在不同事物之間看出別人沒發現的關聯。',-1],['比起「可能會怎樣」，我更關心「現在是怎樣」。',1],['一成不變的例行工作，很快會讓我失去耐心。',-1],['學新東西時，我喜歡先看實際範例，再理解原理。',1],['我常會想「如果……會怎樣？」',-1],['別人常說我是腳踏實地、務實的人。',1]],
-TF:[['做決定時，我優先考慮邏輯和客觀事實。',1],['我很容易察覺別人的情緒變化。',-1],['我認為直接指出問題，比顧及對方感受更重要。',1],['看到別人難過時，我也會跟著難受。',-1],['爭論時，我在意的是誰的論點比較正確。',1],['做決定時，我會先考慮這對身邊的人有什麼影響。',-1],['別人說我有時太理性、不夠體貼。',1],['維持團體和諧，對我來說很重要。',-1],['我覺得規則應該一視同仁，不該因人情而例外。',1],['我很難拒絕別人的請求。',-1],['比起被喜歡，我更在意被認為有能力。',1],['給別人負面意見時，我會花很多心思斟酌用字。',-1],['我喜歡分析問題的原因，找出最有效率的解法。',1],['我常依照內心的價值觀和感覺來做選擇。',-1],['朋友找我傾訴時，我的第一反應是幫他想辦法解決。',1]],
-JP:[['我喜歡事先把行程規劃好。',1],['我常在截止日前才開始全力衝刺。',-1],['我的桌面和房間通常井然有序。',1],['旅行時，我喜歡隨興走，不排太滿的行程。',-1],['事情有明確結論後，我才會覺得安心。',1],['計畫臨時改變時，我通常能很快適應。',-1],['我習慣列待辦清單，並一項項完成。',1],['我喜歡保留選擇空間，不想太早做決定。',-1],['我會先把工作做完，再去玩。',1],['我常同時開始好幾件事，但不一定都完成。',-1],['守時對我來說很重要。',1],['規則和流程常讓我覺得被綁住。',-1],['做了決定之後，我很少再反覆更改。',1],['我覺得在壓力下臨場發揮，反而效率更好。',-1],['我會提前準備，避免最後一刻手忙腳亂。',1]]
-};
-const Q=[];for(let i=0;i<15;i++)for(const d of ['EI','SN','TF','JP'])Q.push({t:RAW[d][i][0],d,dir:RAW[d][i][1]});
+const I18N={"zh-Hant": {"meta": {"htmlLang": "zh-Hant-TW", "title": "十六型人格測驗", "sep": "、", "colon": "："}, "ui": {"eyebrow": "免費・約 10–15 分鐘", "lead": "共 60 題。請依照你「平常、自然的樣子」作答，而不是你希望自己成為的樣子。沒有對錯，第一直覺通常最準。", "facts": ["<b>60</b> 題", "<b>4</b> 個向度", "<b>16</b> 種類型", "作答進度會自動保存在此瀏覽器"], "start": "開始測驗", "resume": "繼續作答（已完成 {n} 題）", "restart": "重新開始", "disclaimer": "本測驗依據榮格心理類型理論設計，供自我探索與教學討論使用，並非官方 MBTI®，也不適合作為招募或診斷依據。", "pageOf": "第 {p} / {n} 頁", "done": "已完成 {n} / {t}", "agree": "同意", "disagree": "不同意", "qLabel": "第 {n} 題", "likert": ["非常同意", "同意", "有點同意", "中立", "有點不同意", "不同意", "非常不同意"], "prev": "上一頁", "home": "回首頁", "next": "下一頁", "see": "看結果", "neutralHint": "中間的小圓圈代表「中立」，請盡量少用。", "secScores": "四個向度的分數", "close": "這個向度兩邊很接近，你可能會依情境在兩者之間切換。", "levels": ["輕微偏好", "中等偏好", "明顯偏好", "非常明顯"], "strengths": "你的優勢", "blind": "需要留意的盲點", "work": "工作與職涯", "careerNote": "職業僅供參考。任何類型都能在各種領域表現出色，興趣與能力同樣重要。", "rel": "人際與感情", "growth": "成長建議", "cardH": "結果圖卡", "cardNote": "手機請長按圖片選「儲存圖片」；電腦請在圖片上按右鍵「另存圖片」。", "cardAlt": "結果圖卡", "textH": "文字版解析", "textNote": "複製下方文字，即可貼到筆記或傳給朋友。", "copy": "複製解析", "redo": "重新測驗", "edit": "修改答案", "copied": "已複製到剪貼簿", "selected": "已選取文字，請按 Ctrl/⌘ + C 複製", "finalNote": "提醒：人格類型描述的是偏好，不是能力或限制。結果可能隨年齡、環境與心境改變，建議當作認識自己的起點。", "txtTitle": "【十六型人格測驗結果】", "txtType": "類型", "txtScores": "向度分數", "txtStr": "優勢", "txtBlind": "盲點", "txtWork": "工作", "txtCareer": "適合方向", "txtRel": "人際", "txtGrowth": "成長建議", "cardFooter": "以榮格心理類型理論為基礎・僅供自我探索參考"}, "dims": {"EI": {"an": "外向", "bn": "內向", "q": "你的能量從哪裡來？", "ad": "你從與人互動、參與外在活動中獲得能量，習慣邊說邊想、邊做邊調整。", "bd": "你從獨處與內在思考中恢復能量，習慣先想清楚再表達或行動。"}, "SN": {"an": "實感", "bn": "直覺", "q": "你如何接收資訊？", "ad": "你重視具體事實與親身經驗，關注當下與細節，偏好實用的做法。", "bd": "你重視整體模式與可能性，關注未來與意義，喜歡新點子和抽象概念。"}, "TF": {"an": "思考", "bn": "情感", "q": "你如何做決定？", "ad": "你做決定時以邏輯、客觀標準為主，重視公平與效率。", "bd": "你做決定時以價值觀與人的感受為主，重視和諧與體諒。"}, "JP": {"an": "判斷", "bn": "感知", "q": "你如何面對外在生活？", "ad": "你喜歡事先規劃、按部就班，事情有結論會讓你比較安心。", "bd": "你喜歡保留彈性、隨機應變，享受開放與探索的過程。"}}, "q": {"EI": ["在聚會中，我通常會主動認識新朋友。", "和一大群人相處一整天後，我需要獨處來恢復精力。", "我習慣邊說邊想，透過討論來整理想法。", "比起大型聚會，我更喜歡和一兩位好友深聊。", "在團體中，我常是帶動氣氛的人。", "遇到問題時，我傾向先自己想清楚再跟別人說。", "一個人在家過週末，讓我覺得很充實。", "我很容易和陌生人聊起來。", "電話響起時，我會有點希望不用接。", "參加活動時，我喜歡同時和很多人互動。", "在會議或課堂上，我常是第一個發言的人。", "比起當面溝通，我更喜歡用文字訊息。", "太久沒有和人互動，我會覺得悶。", "常有人說「很難看出你在想什麼」。", "我喜歡在熱鬧、有人走動的環境中工作。"], "SN": ["我比較相信親身經驗，而不是理論推測。", "我常會想像未來可能發生的各種情境。", "做事時，我習慣照著已經驗證有效的方法。", "我容易被抽象概念或哲學問題吸引。", "我注意細節，常發現別人沒注意到的地方。", "讀書或看電影時，我更在意背後的象徵和意義。", "描述事情時，我會說出具體的時間、地點和數字。", "我常有天馬行空的點子，但不一定會去實行。", "我喜歡實用、能馬上派上用場的知識。", "我常在不同事物之間看出別人沒發現的關聯。", "比起「可能會怎樣」，我更關心「現在是怎樣」。", "一成不變的例行工作，很快會讓我失去耐心。", "學新東西時，我喜歡先看實際範例，再理解原理。", "我常會想「如果……會怎樣？」", "別人常說我是腳踏實地、務實的人。"], "TF": ["做決定時，我優先考慮邏輯和客觀事實。", "我很容易察覺別人的情緒變化。", "我認為直接指出問題，比顧及對方感受更重要。", "看到別人難過時，我也會跟著難受。", "爭論時，我在意的是誰的論點比較正確。", "做決定時，我會先考慮這對身邊的人有什麼影響。", "別人說我有時太理性、不夠體貼。", "維持團體和諧，對我來說很重要。", "我覺得規則應該一視同仁，不該因人情而例外。", "我很難拒絕別人的請求。", "比起被喜歡，我更在意被認為有能力。", "給別人負面意見時，我會花很多心思斟酌用字。", "我喜歡分析問題的原因，找出最有效率的解法。", "我常依照內心的價值觀和感覺來做選擇。", "朋友找我傾訴時，我的第一反應是幫他想辦法解決。"], "JP": ["我喜歡事先把行程規劃好。", "我常在截止日前才開始全力衝刺。", "我的桌面和房間通常井然有序。", "旅行時，我喜歡隨興走，不排太滿的行程。", "事情有明確結論後，我才會覺得安心。", "計畫臨時改變時，我通常能很快適應。", "我習慣列待辦清單，並一項項完成。", "我喜歡保留選擇空間，不想太早做決定。", "我會先把工作做完，再去玩。", "我常同時開始好幾件事，但不一定都完成。", "守時對我來說很重要。", "規則和流程常讓我覺得被綁住。", "做了決定之後，我很少再反覆更改。", "我覺得在壓力下臨場發揮，反而效率更好。", "我會提前準備，避免最後一刻手忙腳亂。"]}, "groups": {"NT": "理性分析型", "NF": "價值理想型", "SJ": "穩健守護型", "SP": "靈活探索型"}, "types": {"INTJ": ["遠見策略家", "獨立、理性，擅長看見長遠的全局並規劃步驟。對自己和他人的標準都高，喜歡把複雜問題變成有系統的方案。", ["能看見長期趨勢並擬定策略", "獨立思考，不輕易隨波逐流", "學習新領域的速度快", "對目標有高度決心"], ["容易顯得冷淡或不好親近", "對效率低落的人事缺乏耐心", "可能低估情緒在決策中的份量"], "喜歡自主度高、能深入鑽研的工作，討厭沒有意義的會議與繁文縟節。", ["策略規劃", "系統架構", "研究員", "數據分析", "產品經理"], "重視少數深交，表達關心的方式常是「幫你解決問題」。需要對方理解他的獨處需求。", ["提出結論前，先問問別人的感受與想法", "接受「夠好」有時比「完美」更有價值", "練習把思考過程說出來，讓別人跟得上"]], "INTP": ["原理探究者", "好奇心旺盛，喜歡拆解事物背後的原理。思考彈性大，享受理論與點子本身帶來的樂趣。", ["分析力強，能抓出邏輯漏洞", "思想開放，願意接受新觀點", "擅長抽象思考與建立模型", "面對問題冷靜客觀"], ["常停在思考階段，不容易落實", "容易疏忽日常瑣事與細節", "有時忽略他人情緒，說話太直"], "適合需要解決複雜問題、允許自由探索的環境。", ["程式設計", "科學研究", "學術工作", "工程師", "遊戲設計"], "對親近的人很忠誠，但不擅長主動表達情感；喜歡能和他一起天馬行空討論的人。", ["替點子設定期限和第一步行動", "練習用對方聽得懂的方式說明", "定期整理生活上的待辦事項"]], "ENTJ": ["目標推動者", "果斷、有自信，傾向帶領團隊朝目標前進。擅長組織資源、做出決策並推動執行。", ["決策迅速、敢於承擔", "能把願景轉化為具體計畫", "溝通直接、有說服力", "高效率、重視成果"], ["容易顯得強勢或不耐煩", "可能忽略團隊成員的情緒與步調", "不太容易承認自己的脆弱"], "在能主導、有明確目標與成長空間的環境中發揮最好。", ["管理職", "創業", "專案經理", "顧問", "律師"], "對關係同樣投入，會規劃共同的未來；需要學會在親密關係中放下「管理者」的角色。", ["決策前多聽一輪不同的意見", "肯定別人的努力，而不只是成果", "留時間休息，不把每件事都當成任務"]], "ENTP": ["點子激盪者", "反應快、愛挑戰，喜歡從不同角度切入問題。討論和辯論對他來說是一種樂趣，常帶來新鮮的想法。", ["創意多、思考靈活", "口才好，能快速抓到重點", "不怕挑戰傳統做法", "適應力強，面對變化不慌亂"], ["容易三分鐘熱度，難以堅持到完成", "辯論過頭可能讓人覺得不被尊重", "對例行性工作缺乏耐心"], "適合變化多、能提案與創新的工作。", ["行銷企劃", "創業", "媒體記者", "顧問", "產品開發"], "有趣、充滿驚喜，喜歡能互相激盪的對象；要留意別把爭論帶進感情。", ["挑一個點子，堅持做到完成", "爭論前先確認對方是否想討論", "把執行細節交給擅長的夥伴，並尊重他們"]], "INFJ": ["洞察引導者", "安靜而有深度，擅長理解他人內心，懷抱讓世界更好的理想。外表溫和，內心有堅定的原則。", ["洞察力強，能讀懂言外之意", "有理想、有原則", "善於傾聽與給予建議", "能長期投入有意義的目標"], ["容易承擔太多他人的情緒而累垮", "對自己要求高，追求完美", "被誤解時傾向默默切斷關係"], "適合能幫助他人、符合個人價值觀的工作。", ["諮商輔導", "教育", "社工", "寫作", "人才發展"], "渴望深刻、真誠的連結，不喜歡表面社交；需要對方理解他偶爾需要獨處。", ["學會說「不」，保留自己的能量", "把期待說出口，不要等別人猜", "允許計畫和人都有不完美"]], "INFP": ["理想追尋者", "溫柔、富有想像力，重視真實的自我與內心的價值。對美好事物敏感，常透過創作或關懷表達自己。", ["同理心強，包容不同的人", "創意與想像力豐富", "忠於自己的價值觀", "擅長用文字或藝術表達情感"], ["容易理想化，遇到落差時感到失落", "面對衝突傾向逃避", "不擅長安排實際事務與時間"], "適合有意義、能發揮創意且彈性較大的工作。", ["設計", "寫作編輯", "心理相關", "插畫藝術", "非營利組織"], "浪漫、真誠，對感情投入很深；需要被接納真實的樣子。", ["把大夢想拆成今天能完成的小步驟", "練習及早表達不滿，不要累積", "對自己溫柔一點，別太苛責"]], "ENFJ": ["熱忱帶領者", "有感染力、樂於助人，擅長凝聚大家並激發他人的潛能。很在意團體的和諧與每個人的成長。", ["溝通與鼓舞人心的能力強", "善於察覺團隊需求", "有責任感、組織力好", "真心希望他人變得更好"], ["太在意別人的看法", "容易忽略自己的需要", "可能過度介入他人的選擇"], "適合與人合作、能帶領或培育他人的角色。", ["教師講師", "人力資源", "公關", "組織管理", "業務主管"], "體貼、主動經營關係；要記得也讓對方有機會照顧你。", ["每週留一段只屬於自己的時間", "接受不是每個人都需要你的幫忙", "遇到批評時，先分辨是對事還是對人"]], "ENFP": ["靈感火花家", "熱情、好奇，總能在生活中找到新的可能。善於和人建立連結，把能量和樂觀帶給身邊的人。", ["熱情、有感染力", "點子多、想像力豐富", "善於社交、容易交朋友", "能看見他人的優點"], ["興趣多但容易分心", "不擅長細節與重複性工作", "情緒起伏可能比較大"], "喜歡有創意、能接觸人、變化多的工作。", ["行銷企劃", "活動策劃", "教育", "媒體創作", "創業"], "溫暖熱情，喜歡分享生活；需要對方給他探索的空間。", ["用清單或番茄鐘幫自己專注", "答應之前先評估時間和精力", "熱度退去時，回想當初的初衷"]], "ISTJ": ["可靠執行者", "踏實、負責，做事一步一腳印。重視規則與承諾，是團隊中最讓人放心的人。", ["負責任、說到做到", "注重細節、做事精確", "有條理、善於規劃流程", "冷靜穩定，面對壓力不慌"], ["對改變和新方法較抗拒", "可能顯得固執、不夠變通", "不太擅長表達情緒"], "適合結構清楚、重視準確度的工作。", ["會計財務", "行政管理", "工程", "品質管理", "公務人員"], "用實際行動表達愛，忠誠可靠；可以試著多用言語表達關心。", ["試著用新方法完成一件小事", "先聽完別人的想法再判斷", "偶爾說出感謝與感受"]], "ISFJ": ["細心守護者", "溫和、體貼，默默照顧身邊的人。記得別人的小細節，重視傳統與穩定。", ["細心體貼，觀察入微", "可靠、有耐心", "務實，能把事情做得周到", "重視團隊與家庭"], ["容易委屈自己、不好意思拒絕", "對變動感到不安", "付出不被看見時容易受傷"], "適合能照顧他人、步調穩定的工作。", ["護理醫療", "教育", "行政支援", "客戶服務", "社工"], "溫柔忠誠，會默默記得對方的喜好；自己也需要被看見與感謝。", ["練習直接說出自己的需求", "把「別人的期待」和「自己的責任」分開", "給新事物一點機會"]], "ESTJ": ["秩序管理者", "務實、有組織力，擅長建立規則和流程讓事情順利運作。直接坦率，重視效率與責任。", ["組織與執行力強", "做事有效率、重結果", "誠實直接、值得信賴", "能清楚分配任務"], ["對不同做法缺乏彈性", "說話可能太直，讓人感到壓力", "容易忽略情緒面的需求"], "適合需要管理、制度與明確成果的職位。", ["管理職", "營運", "財務", "法律", "軍警"], "重視承諾與責任，會為家人打點一切；可以多保留一些彈性與浪漫。", ["決定前先問「還有其他做法嗎？」", "給回饋時先肯定、再建議", "允許別人用自己的方式完成"]], "ESFJ": ["溫暖協調者", "熱心、合群，樂於照顧大家的需要。擅長營造和諧氣氛，是團體裡的黏著劑。", ["熱心助人、善於照顧", "人際關係良好", "有責任感、可靠", "擅長協調與安排活動"], ["太在意別人的評價", "不容易接受批評", "可能為了和諧而壓抑自己的意見"], "適合與人接觸、分工明確的環境。", ["教育", "醫護", "人力資源", "活動企劃", "客戶服務"], "體貼周到，重視節日與儀式感；需要對方給予肯定與回應。", ["不必讓每個人都滿意", "把批評當成資訊，而不是否定", "練習說出不同的意見"]], "ISTP": ["冷靜工匠", "冷靜、務實，喜歡動手了解事物如何運作。遇到突發狀況反應快，擅長找出實際的解法。", ["冷靜沉著、臨危不亂", "動手與解決問題的能力強", "獨立、有效率", "觀察力敏銳"], ["不喜歡長期承諾與規劃", "不擅長表達情感", "容易對無聊的事失去興趣"], "適合能動手操作、自由度高的工作。", ["工程技術", "機械維修", "資訊安全", "運動相關", "消防救護"], "給彼此空間，用行動陪伴；可以多分享一些內心的想法。", ["試著設定一個長期目標", "用簡單的話說出自己的感受", "做決定前想想對他人的影響"]], "ISFP": ["自在創作者", "溫和、敏感，活在當下並享受生活中的美感。不愛張揚，但有自己獨特的品味與堅持。", ["審美敏銳、富有藝術感", "溫柔包容、不批判他人", "活在當下、懂得享受", "適應力好"], ["不喜歡規劃未來", "遇到衝突傾向退縮", "容易低估自己的能力"], "適合有創作空間、氣氛和諧的工作。", ["設計", "攝影", "手作工藝", "美容美髮", "動物照護"], "溫柔體貼，用行動和小驚喜表達愛；需要被尊重、不被催促。", ["替重要的事加一點結構", "練習在衝突中表達立場", "讓別人看見你的作品和想法"]], "ESTP": ["行動實踐家", "精力充沛、反應快，喜歡從做中學。擅長觀察現場狀況，抓住機會立即行動。", ["行動力強、敢冒險", "臨場反應與談判能力好", "務實，重視實際效果", "幽默、善於社交"], ["容易衝動，忽略長期後果", "對理論與規劃缺乏耐心", "可能不經意說話傷人"], "適合節奏快、能直接看到成果的工作。", ["業務", "創業", "運動教練", "警消救護", "活動執行"], "有趣、愛冒險，帶來很多新鮮體驗；要留意對方是否需要更多穩定感。", ["重要決定前停一下，想想三個月後", "培養一項需要長期累積的技能", "說話前想想對方的感受"]], "ESFP": ["舞台活力家", "開朗、熱情，喜歡和人一起享受生活。天生有表演魅力，能讓周遭氣氛熱絡起來。", ["樂觀開朗、帶動氣氛", "善於觀察他人需求", "務實、懂得享受當下", "適應力強"], ["不喜歡長期規劃", "容易受情緒與誘惑影響", "面對嚴肅問題時傾向逃避"], "適合與人互動、有表現機會的工作。", ["表演藝術", "活動主持", "業務", "餐飲服務", "幼兒教育"], "熱情慷慨，喜歡一起體驗新事物；也要學著面對關係中的難題。", ["每月設定一個小儲蓄或學習目標", "遇到問題先處理，再放鬆", "給自己安靜反思的時間"]]}}, "zh-Hans": {"meta": {"htmlLang": "zh-Hans-CN", "title": "十六型人格测验", "sep": "、", "colon": "："}, "ui": {"eyebrow": "免费・约 10–15 分钟", "lead": "共 60 题。请依照你“平常、自然的样子”作答，而不是你希望自己成为的样子。没有对错，第一直觉通常最准。", "facts": ["<b>60</b> 题", "<b>4</b> 个向度", "<b>16</b> 种类型", "作答进度会自动保存在此浏览器"], "start": "开始测验", "resume": "继续作答（已完成 {n} 题）", "restart": "重新开始", "disclaimer": "本测验依据荣格心理类型理论设计，供自我探索与教学讨论使用，并非官方 MBTI®，也不适合作为招募或诊断依据。", "pageOf": "第 {p} / {n} 页", "done": "已完成 {n} / {t}", "agree": "同意", "disagree": "不同意", "qLabel": "第 {n} 题", "likert": ["非常同意", "同意", "有点同意", "中立", "有点不同意", "不同意", "非常不同意"], "prev": "上一页", "home": "回首页", "next": "下一页", "see": "看结果", "neutralHint": "中间的小圆圈代表“中立”，请尽量少用。", "secScores": "四个向度的分数", "close": "这个向度两边很接近，你可能会依情境在两者之间切换。", "levels": ["轻微偏好", "中等偏好", "明显偏好", "非常明显"], "strengths": "你的优势", "blind": "需要留意的盲点", "work": "工作与职涯", "careerNote": "职业仅供参考。任何类型都能在各种领域表现出色，兴趣与能力同样重要。", "rel": "人际与感情", "growth": "成长建议", "cardH": "结果图卡", "cardNote": "手机请长按图片选“保存图片”；电脑请在图片上按右键“另存图片”。", "cardAlt": "结果图卡", "textH": "文本版解析", "textNote": "拷贝下方文本，即可贴到笔记或传给朋友。", "copy": "拷贝解析", "redo": "重新测验", "edit": "修改答案", "copied": "已拷贝到剪贴板", "selected": "已选取文本，请按 Ctrl/⌘ + C 拷贝", "finalNote": "提醒：人格类型描述的是偏好，不是能力或限制。结果可能随年龄、环境与心境改变，建议当作认识自己的起点。", "txtTitle": "【十六型人格测验结果】", "txtType": "类型", "txtScores": "向度分数", "txtStr": "优势", "txtBlind": "盲点", "txtWork": "工作", "txtCareer": "适合方向", "txtRel": "人际", "txtGrowth": "成长建议", "cardFooter": "以荣格心理类型理论为基础・仅供自我探索参考"}, "dims": {"EI": {"an": "外向", "bn": "内向", "q": "你的能量从哪里来？", "ad": "你从与人交互、参与外在活动中获得能量，习惯边说边想、边做边调整。", "bd": "你从独处与内在思考中恢复能量，习惯先想清楚再表达或行动。"}, "SN": {"an": "实感", "bn": "直觉", "q": "你如何接收信息？", "ad": "你重视具体事实与亲身经验，关注当下与细节，偏好实用的做法。", "bd": "你重视整体模式与可能性，关注未来与意义，喜欢新点子和抽象概念。"}, "TF": {"an": "思考", "bn": "情感", "q": "你如何做决定？", "ad": "你做决定时以逻辑、客观标准为主，重视公平与效率。", "bd": "你做决定时以价值观与人的感受为主，重视和谐与体谅。"}, "JP": {"an": "判断", "bn": "感知", "q": "你如何面对外在生活？", "ad": "你喜欢事先规划、按部就班，事情有结论会让你比较安心。", "bd": "你喜欢保留弹性、随机应变，享受开放与探索的过程。"}}, "q": {"EI": ["在聚会中，我通常会主动认识新朋友。", "和一大群人相处一整天后，我需要独处来恢复精力。", "我习惯边说边想，通过讨论来整理想法。", "比起大型聚会，我更喜欢和一两位好友深聊。", "在团体中，我常是带动气氛的人。", "遇到问题时，我倾向先自己想清楚再跟别人说。", "一个人在家过周末，让我觉得很充实。", "我很容易和陌生人聊起来。", "电话响起时，我会有点希望不用接。", "参加活动时，我喜欢同时和很多人交互。", "在会议或课堂上，我常是第一个发言的人。", "比起当面沟通，我更喜欢用文本消息。", "太久没有和人交互，我会觉得闷。", "常有人说“很难看出你在想什么”。", "我喜欢在热闹、有人走动的环境中工作。"], "SN": ["我比较相信亲身经验，而不是理论推测。", "我常会想像未来可能发生的各种情境。", "做事时，我习惯照着已经验证有效的方法。", "我容易被抽象概念或哲学问题吸引。", "我注意细节，常发现别人没注意到的地方。", "读书或看电影时，我更在意背后的象征和意义。", "描述事情时，我会说出具体的时间、地点和数字。", "我常有天马行空的点子，但不一定会去实行。", "我喜欢实用、能马上派上用场的知识。", "我常在不同事物之间看出别人没发现的关联。", "比起“可能会怎样”，我更关心“现在是怎样”。", "一成不变的例行工作，很快会让我失去耐心。", "学新东西时，我喜欢先看实际范例，再理解原理。", "我常会想“如果……会怎样？”", "别人常说我是脚踏实地、务实的人。"], "TF": ["做决定时，我优先考虑逻辑和客观事实。", "我很容易察觉别人的情绪变化。", "我认为直接指出问题，比顾及对方感受更重要。", "看到别人难过时，我也会跟着难受。", "争论时，我在意的是谁的论点比较正确。", "做决定时，我会先考虑这对身边的人有什么影响。", "别人说我有时太理性、不够体贴。", "维持团体和谐，对我来说很重要。", "我觉得规则应该一视同仁，不该因人情而例外。", "我很难拒绝别人的请求。", "比起被喜欢，我更在意被认为有能力。", "给别人负面意见时，我会花很多心思斟酌用字。", "我喜欢分析问题的原因，找出最有效率的解法。", "我常依照内心的价值观和感觉来做选择。", "朋友找我倾诉时，我的第一反应是帮他想办法解决。"], "JP": ["我喜欢事先把行程规划好。", "我常在截止日前才开始全力冲刺。", "我的桌面和房间通常井然有序。", "旅行时，我喜欢随兴走，不排太满的行程。", "事情有明确结论后，我才会觉得安心。", "计划临时改变时，我通常能很快适应。", "我习惯列待办清单，并一项项完成。", "我喜欢保留选择空间，不想太早做决定。", "我会先把工作做完，再去玩。", "我常同时开始好几件事，但不一定都完成。", "守时对我来说很重要。", "规则和流程常让我觉得被绑住。", "做了决定之后，我很少再反复更改。", "我觉得在压力下临场发挥，反而效率更好。", "我会提前准备，避免最后一刻手忙脚乱。"]}, "groups": {"NT": "理性分析型", "NF": "价值理想型", "SJ": "稳健守护型", "SP": "灵活探索型"}, "types": {"INTJ": ["远见策略家", "独立、理性，擅长看见长远的全局并规划步骤。对自己和他人的标准都高，喜欢把复杂问题变成有系统的方案。", ["能看见长期趋势并拟定策略", "独立思考，不轻易随波逐流", "学习新领域的速度快", "对目标有高度决心"], ["容易显得冷淡或不好亲近", "对效率低落的人事缺乏耐心", "可能低估情绪在决策中的份量"], "喜欢自主度高、能深入钻研的工作，讨厌没有意义的会议与繁文缛节。", ["策略规划", "系统架构", "研究员", "数据分析", "产品经理"], "重视少数深交，表达关心的方式常是“帮你解决问题”。需要对方理解他的独处需求。", ["提出结论前，先问问别人的感受与想法", "接受“够好”有时比“完美”更有价值", "练习把思考过程说出来，让别人跟得上"]], "INTP": ["原理探究者", "好奇心旺盛，喜欢拆解事物背后的原理。思考弹性大，享受理论与点子本身带来的乐趣。", ["分析力强，能抓出逻辑漏洞", "思想开放，愿意接受新观点", "擅长抽象思考与创建模型", "面对问题冷静客观"], ["常停在思考阶段，不容易落实", "容易疏忽日常琐事与细节", "有时忽略他人情绪，说话太直"], "适合需要解决复杂问题、允许自由探索的环境。", ["编程", "科学研究", "学术工作", "工程师", "游戏设计"], "对亲近的人很忠诚，但不擅长主动表达情感；喜欢能和他一起天马行空讨论的人。", ["替点子设置期限和第一步行动", "练习用对方听得懂的方式说明", "定期整理生活上的待办事项"]], "ENTJ": ["目标推动者", "果断、有自信，倾向带领团队朝目标前进。擅长组织资源、做出决策并推动运行。", ["决策迅速、敢于承担", "能把愿景转化为具体计划", "沟通直接、有说服力", "高效率、重视成果"], ["容易显得强势或不耐烦", "可能忽略团队成员的情绪与步调", "不太容易承认自己的脆弱"], "在能主导、有明确目标与成长空间的环境中发挥最好。", ["管理职", "创业", "项目经理", "顾问", "律师"], "对关系同样投入，会规划共同的未来；需要学会在亲密关系中放下“管理者”的角色。", ["决策前多听一轮不同的意见", "肯定别人的努力，而不只是成果", "留时间休息，不把每件事都当成任务"]], "ENTP": ["点子激荡者", "反应快、爱挑战，喜欢从不同角度切入问题。讨论和辩论对他来说是一种乐趣，常带来新鲜的想法。", ["创意多、思考灵活", "口才好，能快速抓到重点", "不怕挑战传统做法", "适应力强，面对变化不慌乱"], ["容易三分钟热度，难以坚持到完成", "辩论过头可能让人觉得不被尊重", "对例行性工作缺乏耐心"], "适合变化多、能提案与创新的工作。", ["行销企划", "创业", "媒体记者", "顾问", "产品开发"], "有趣、充满惊喜，喜欢能互相激荡的对象；要留意别把争论带进感情。", ["挑一个点子，坚持做到完成", "争论前先确认对方是否想讨论", "把运行细节交给擅长的伙伴，并尊重他们"]], "INFJ": ["洞察引导者", "安静而有深度，擅长理解他人内心，怀抱让世界更好的理想。外表温和，内心有坚定的原则。", ["洞察力强，能读懂言外之意", "有理想、有原则", "善于倾听与给予建议", "能长期投入有意义的目标"], ["容易承担太多他人的情绪而累垮", "对自己要求高，追求完美", "被误解时倾向默默切断关系"], "适合能帮助他人、符合个人价值观的工作。", ["咨商辅导", "教育", "社工", "写作", "人才发展"], "渴望深刻、真诚的链接，不喜欢表面社交；需要对方理解他偶尔需要独处。", ["学会说“不”，保留自己的能量", "把期待说出口，不要等别人猜", "允许计划和人都有不完美"]], "INFP": ["理想追寻者", "温柔、富有想像力，重视真实的自我与内心的价值。对美好事物敏感，常通过创作或关怀表达自己。", ["同理心强，包容不同的人", "创意与想像力丰富", "忠于自己的价值观", "擅长用文本或艺术表达情感"], ["容易理想化，遇到落差时感到失落", "面对冲突倾向逃避", "不擅长安排实际事务与时间"], "适合有意义、能发挥创意且弹性较大的工作。", ["设计", "写作编辑", "心理相关", "插画艺术", "非营利组织"], "浪漫、真诚，对感情投入很深；需要被接纳真实的样子。", ["把大梦想拆成今天能完成的小步骤", "练习及早表达不满，不要累积", "对自己温柔一点，别太苛责"]], "ENFJ": ["热忱带领者", "有感染力、乐于助人，擅长凝聚大家并激发他人的潜能。很在意团体的和谐与每个人的成长。", ["沟通与鼓舞人心的能力强", "善于察觉团队需求", "有责任感、组织力好", "真心希望他人变得更好"], ["太在意别人的看法", "容易忽略自己的需要", "可能过度介入他人的选择"], "适合与人合作、能带领或培育他人的角色。", ["教师讲师", "人力资源", "公关", "组织管理", "业务主管"], "体贴、主动经营关系；要记得也让对方有机会照顾你。", ["每周留一段只属于自己的时间", "接受不是每个人都需要你的帮忙", "遇到批评时，先分辨是对事还是对人"]], "ENFP": ["灵感火花家", "热情、好奇，总能在生活中找到新的可能。善于和人创建链接，把能量和乐观带给身边的人。", ["热情、有感染力", "点子多、想像力丰富", "善于社交、容易交朋友", "能看见他人的优点"], ["兴趣多但容易分心", "不擅长细节与重复性工作", "情绪起伏可能比较大"], "喜欢有创意、能接触人、变化多的工作。", ["行销企划", "活动策划", "教育", "媒体创作", "创业"], "温暖热情，喜欢分享生活；需要对方给他探索的空间。", ["用清单或番茄钟帮自己专注", "答应之前先评估时间和精力", "热度退去时，回想当初的初衷"]], "ISTJ": ["可靠运行者", "踏实、负责，做事一步一脚印。重视规则与承诺，是团队中最让人放心的人。", ["负责任、说到做到", "注重细节、做事精确", "有条理、善于规划流程", "冷静稳定，面对压力不慌"], ["对改变和新方法较抗拒", "可能显得固执、不够变通", "不太擅长表达情绪"], "适合结构清楚、重视准确度的工作。", ["会计财务", "行政管理", "工程", "品质管理", "公务人员"], "用实际行动表达爱，忠诚可靠；可以试着多用言语表达关心。", ["试着用新方法完成一件小事", "先听完别人的想法再判断", "偶尔说出感谢与感受"]], "ISFJ": ["细心守护者", "温和、体贴，默默照顾身边的人。记得别人的小细节，重视传统与稳定。", ["细心体贴，观察入微", "可靠、有耐心", "务实，能把事情做得周到", "重视团队与家庭"], ["容易委屈自己、不好意思拒绝", "对变动感到不安", "付出不被看见时容易受伤"], "适合能照顾他人、步调稳定的工作。", ["护理医疗", "教育", "行政支持", "客户服务", "社工"], "温柔忠诚，会默默记得对方的喜好；自己也需要被看见与感谢。", ["练习直接说出自己的需求", "把“别人的期待”和“自己的责任”分开", "给新事物一点机会"]], "ESTJ": ["秩序管理者", "务实、有组织力，擅长创建规则和流程让事情顺利运作。直接坦率，重视效率与责任。", ["组织与运行力强", "做事有效率、重结果", "诚实直接、值得信赖", "能清楚分配任务"], ["对不同做法缺乏弹性", "说话可能太直，让人感到压力", "容易忽略情绪面的需求"], "适合需要管理、制度与明确成果的职位。", ["管理职", "营运", "财务", "法律", "军警"], "重视承诺与责任，会为家人打点一切；可以多保留一些弹性与浪漫。", ["决定前先问“还有其他做法吗？”", "给回馈时先肯定、再建议", "允许别人用自己的方式完成"]], "ESFJ": ["温暖协调者", "热心、合群，乐于照顾大家的需要。擅长营造和谐气氛，是团体里的黏着剂。", ["热心助人、善于照顾", "人际关系良好", "有责任感、可靠", "擅长协调与安排活动"], ["太在意别人的评价", "不容易接受批评", "可能为了和谐而压抑自己的意见"], "适合与人接触、分工明确的环境。", ["教育", "医护", "人力资源", "活动企划", "客户服务"], "体贴周到，重视节日与仪式感；需要对方给予肯定与回应。", ["不必让每个人都满意", "把批评当成信息，而不是否定", "练习说出不同的意见"]], "ISTP": ["冷静工匠", "冷静、务实，喜欢动手了解事物如何运作。遇到突发状况反应快，擅长找出实际的解法。", ["冷静沉着、临危不乱", "动手与解决问题的能力强", "独立、有效率", "观察力敏锐"], ["不喜欢长期承诺与规划", "不擅长表达情感", "容易对无聊的事失去兴趣"], "适合能动手操作、自由度高的工作。", ["工程技术", "机械维修", "信息安全", "运动相关", "消防救护"], "给彼此空间，用行动陪伴；可以多分享一些内心的想法。", ["试着设置一个长期目标", "用简单的话说出自己的感受", "做决定前想想对他人的影响"]], "ISFP": ["自在创作者", "温和、敏感，活在当下并享受生活中的美感。不爱张扬，但有自己独特的品味与坚持。", ["审美敏锐、富有艺术感", "温柔包容、不批判他人", "活在当下、懂得享受", "适应力好"], ["不喜欢规划未来", "遇到冲突倾向退缩", "容易低估自己的能力"], "适合有创作空间、气氛和谐的工作。", ["设计", "摄影", "手作工艺", "美容美发", "动物照护"], "温柔体贴，用行动和小惊喜表达爱；需要被尊重、不被催促。", ["替重要的事加一点结构", "练习在冲突中表达立场", "让别人看见你的作品和想法"]], "ESTP": ["行动实践家", "精力充沛、反应快，喜欢从做中学。擅长观察现场状况，抓住机会立即行动。", ["行动力强、敢冒险", "临场反应与谈判能力好", "务实，重视实际效果", "幽默、善于社交"], ["容易冲动，忽略长期后果", "对理论与规划缺乏耐心", "可能不经意说话伤人"], "适合节奏快、能直接看到成果的工作。", ["业务", "创业", "运动教练", "警消救护", "活动运行"], "有趣、爱冒险，带来很多新鲜体验；要留意对方是否需要更多稳定感。", ["重要决定前停一下，想想三个月后", "培养一项需要长期累积的技能", "说话前想想对方的感受"]], "ESFP": ["舞台活力家", "开朗、热情，喜欢和人一起享受生活。天生有表演魅力，能让周遭气氛热络起来。", ["乐观开朗、带动气氛", "善于观察他人需求", "务实、懂得享受当下", "适应力强"], ["不喜欢长期规划", "容易受情绪与诱惑影响", "面对严肃问题时倾向逃避"], "适合与人交互、有表现机会的工作。", ["表演艺术", "活动主持", "业务", "餐饮服务", "幼儿教育"], "热情慷慨，喜欢一起体验新事物；也要学着面对关系中的难题。", ["每月设置一个小储蓄或学习目标", "遇到问题先处理，再放松", "给自己安静反思的时间"]]}}, "en": {"meta": {"htmlLang": "en", "title": "16-Type Personality Test", "sep": ", ", "colon": ": "}, "ui": {"eyebrow": "Free · About 10–15 minutes", "lead": "60 statements. Answer as you usually and naturally are, not as you wish you were. There are no right or wrong answers, and your first instinct is usually the most accurate.", "facts": ["<b>60</b> statements", "<b>4</b> dimensions", "<b>16</b> types", "Your progress is saved in this browser"], "start": "Start the test", "resume": "Continue ({n} answered)", "restart": "Start over", "disclaimer": "This test is based on Jungian psychological type theory and is meant for self-discovery and classroom discussion. It is not the official MBTI® and should not be used for hiring or diagnosis.", "pageOf": "Page {p} of {n}", "done": "{n} / {t} answered", "agree": "Agree", "disagree": "Disagree", "qLabel": "Statement {n}", "likert": ["Strongly agree", "Agree", "Somewhat agree", "Neutral", "Somewhat disagree", "Disagree", "Strongly disagree"], "prev": "Back", "home": "Home", "next": "Next", "see": "See my results", "neutralHint": "The small middle circle means neutral. Try to use it sparingly.", "secScores": "Your four dimensions", "close": "The two sides are close here, so you may switch between them depending on the situation.", "levels": ["Slight preference", "Moderate preference", "Clear preference", "Very clear preference"], "strengths": "Your strengths", "blind": "Blind spots to watch", "work": "Work and career", "careerNote": "Careers are suggestions only. Every type can excel in any field; interests and skills matter just as much.", "rel": "Relationships", "growth": "Growth tips", "cardH": "Result card", "cardNote": "On a phone, press and hold the image to save it. On a computer, right-click it and choose Save Image.", "cardAlt": "result card", "textH": "Text summary", "textNote": "Copy the text below to paste into your notes or send to a friend.", "copy": "Copy summary", "redo": "Retake the test", "edit": "Change answers", "copied": "Copied to clipboard", "selected": "Text selected. Press Ctrl/⌘ + C to copy.", "finalNote": "Personality types describe preferences, not abilities or limits. Results can shift with age, setting and mood, so treat this as a starting point for knowing yourself.", "txtTitle": "16-Type Personality Test Result", "txtType": "Type", "txtScores": "Dimensions", "txtStr": "Strengths", "txtBlind": "Blind spots", "txtWork": "Work", "txtCareer": "Suggested fields", "txtRel": "Relationships", "txtGrowth": "Growth tips", "cardFooter": "Based on Jungian type theory · For self-discovery only"}, "dims": {"EI": {"an": "Extraversion", "bn": "Introversion", "q": "Where does your energy come from?", "ad": "You gain energy from people and outside activity, and you tend to think while talking and adjust as you go.", "bd": "You recharge through solitude and reflection, and you tend to think things through before speaking or acting."}, "SN": {"an": "Sensing", "bn": "Intuition", "q": "How do you take in information?", "ad": "You value concrete facts and direct experience, focus on the present and details, and prefer practical approaches.", "bd": "You value patterns and possibilities, focus on the future and meaning, and enjoy new ideas and abstract concepts."}, "TF": {"an": "Thinking", "bn": "Feeling", "q": "How do you make decisions?", "ad": "You decide mainly by logic and objective standards, valuing fairness and efficiency.", "bd": "You decide mainly by values and how people will feel, valuing harmony and understanding."}, "JP": {"an": "Judging", "bn": "Perceiving", "q": "How do you approach the outside world?", "ad": "You like to plan ahead and go step by step, and you feel at ease once things are settled.", "bd": "You like to stay flexible and adapt as you go, enjoying an open, exploratory process."}}, "q": {"EI": ["At gatherings, I usually introduce myself to new people.", "After a full day with a big group, I need time alone to recharge.", "I tend to think out loud and sort out ideas by talking them through.", "I prefer deep talks with one or two friends over big parties.", "In a group, I'm often the one who livens things up.", "When facing a problem, I prefer to think it through before telling anyone.", "A weekend alone at home feels fulfilling to me.", "I find it easy to strike up conversations with strangers.", "When the phone rings, part of me hopes I don't have to answer.", "At events, I like interacting with lots of people at once.", "In meetings or class, I'm often the first to speak up.", "I prefer texting over talking face to face.", "If I go too long without seeing people, I feel restless.", "People often say it's hard to tell what I'm thinking.", "I like working in busy places with people around."], "SN": ["I trust hands-on experience more than theory.", "I often imagine different ways the future could play out.", "I like to stick with methods that have proven to work.", "Abstract ideas and philosophical questions draw me in.", "I notice details that others often miss.", "In books and films, I care most about the symbolism and deeper meaning.", "When I describe something, I include specific times, places and numbers.", "I often have wild ideas, but I don't always act on them.", "I like practical knowledge I can use right away.", "I often see connections between things that others don't.", "I care more about how things are than how they could be.", "Repetitive routine work quickly wears down my patience.", "When learning something new, I like to see real examples before the theory.", "I often find myself wondering, \"What if...?\"", "People describe me as practical and down-to-earth."], "TF": ["When deciding, I put logic and objective facts first.", "I easily notice changes in other people's moods.", "Pointing out a problem directly matters more than sparing someone's feelings.", "When I see someone upset, I feel upset too.", "In an argument, what matters to me is whose point is more correct.", "Before deciding, I consider how it will affect the people around me.", "People sometimes say I'm too rational and not considerate enough.", "Keeping harmony in a group is important to me.", "Rules should apply equally to everyone, with no exceptions for friends.", "I find it hard to say no to people.", "I care more about being seen as competent than being liked.", "When giving criticism, I put a lot of thought into my wording.", "I like analyzing why a problem happened and finding the most efficient fix.", "I often make choices based on my inner values and feelings.", "When a friend vents to me, my first instinct is to help solve the problem."], "JP": ["I like to plan my schedule in advance.", "I often only go all-out right before a deadline.", "My desk and room are usually tidy and organized.", "When traveling, I like to wander freely without a packed itinerary.", "I only feel at ease once things are settled.", "When plans change suddenly, I usually adapt quickly.", "I make to-do lists and work through them one by one.", "I like keeping my options open rather than deciding too early.", "I finish my work first, then play.", "I often start several things at once but don't always finish them.", "Being on time matters a lot to me.", "Rules and procedures often make me feel boxed in.", "Once I make a decision, I rarely change it.", "I work better when improvising under pressure.", "I prepare ahead to avoid a last-minute rush."]}, "groups": {"NT": "Rational Thinkers", "NF": "Idealists", "SJ": "Steady Guardians", "SP": "Flexible Explorers"}, "types": {"INTJ": ["Visionary Strategist", "Independent and rational, you see the big picture and map out the steps to get there. You hold high standards and turn complex problems into clear systems.", ["Long-range strategy", "Independent judgment", "Learns new fields fast", "Strong determination"], ["Can seem distant or hard to approach", "Impatient with inefficiency", "May underestimate the role of emotions"], "You thrive with autonomy and room to dig deep, and dislike pointless meetings and red tape.", ["Strategy", "Systems architecture", "Research", "Data analysis", "Product management"], "You value a few deep friendships and often show care by solving problems for people. You need partners who respect your alone time.", ["Ask how others feel before sharing your conclusion", "Accept that good enough sometimes beats perfect", "Explain your reasoning out loud so others can follow"]], "INTP": ["Principle Explorer", "Deeply curious, you love taking ideas apart to see how they work. Flexible in thought, you enjoy theories and ideas for their own sake.", ["Sharp analysis", "Open to new views", "Abstract modeling", "Calm and objective"], ["Ideas often stay unfinished", "Overlooks everyday details", "Can be too blunt"], "You do best where there are complex problems and freedom to explore.", ["Software development", "Scientific research", "Academia", "Engineering", "Game design"], "You are loyal to those close to you but slow to express feelings, and you enjoy people who will explore wild ideas with you.", ["Give each idea a deadline and a first step", "Explain things in terms others understand", "Review your everyday to-dos regularly"]], "ENTJ": ["Goal Driver", "Decisive and confident, you naturally lead teams toward a goal. You organize resources, make the call and drive execution.", ["Quick, bold decisions", "Turns vision into plans", "Direct and persuasive", "Results-focused"], ["Can seem forceful or impatient", "May overlook others' feelings and pace", "Reluctant to show vulnerability"], "You perform best when leading, with clear goals and room to grow.", ["Management", "Entrepreneurship", "Project management", "Consulting", "Law"], "You commit fully and plan a shared future, but need to set aside the manager role in close relationships.", ["Hear one more round of opinions before deciding", "Praise effort, not only results", "Rest without turning it into a task"]], "ENTP": ["Idea Sparker", "Quick-witted and fond of challenges, you look at problems from every angle. Debate is fun for you and often sparks fresh ideas.", ["Creative and flexible", "Articulate and sharp", "Challenges convention", "Adapts easily"], ["Loses interest before finishing", "Debates can feel disrespectful", "Impatient with routine"], "You suit varied work where you can pitch ideas and innovate.", ["Marketing", "Entrepreneurship", "Journalism", "Consulting", "Product development"], "Fun and full of surprises, you enjoy partners who spar with ideas, but keep the debating out of the relationship.", ["Pick one idea and see it through", "Check whether others want a debate first", "Hand details to capable partners and respect their work"]], "INFJ": ["Insightful Guide", "Quiet and deep, you understand what others feel and hold ideals for a better world. Gentle on the outside, firm in your principles.", ["Reads between the lines", "Principled and idealistic", "Good listener and advisor", "Committed to meaningful goals"], ["Absorbs others' emotions and burns out", "Perfectionist about yourself", "Quietly cuts ties when misunderstood"], "You suit work that helps others and matches your values.", ["Counseling", "Education", "Social work", "Writing", "People development"], "You long for deep, genuine connection and dislike small talk, and you need space to be alone sometimes.", ["Learn to say no and protect your energy", "Say what you expect instead of hoping others guess", "Allow plans and people to be imperfect"]], "INFP": ["Ideal Seeker", "Gentle and imaginative, you value authenticity and your inner values. Sensitive to beauty, you express yourself through creativity and care.", ["Deep empathy", "Rich imagination", "True to your values", "Expressive in words and art"], ["Idealizes, then feels let down", "Avoids conflict", "Struggles with practical planning"], "You suit meaningful, creative and flexible work.", ["Design", "Writing and editing", "Psychology", "Illustration", "Nonprofits"], "Romantic and sincere, you invest deeply and need to be accepted as you truly are.", ["Break big dreams into steps you can do today", "Voice concerns early instead of storing them up", "Be kinder to yourself"]], "ENFJ": ["Passionate Leader", "Warm and inspiring, you bring people together and help them grow. Group harmony and everyone's growth matter to you.", ["Inspiring communicator", "Senses team needs", "Responsible organizer", "Wants others to thrive"], ["Cares too much about others' opinions", "Neglects own needs", "May overstep in others' choices"], "You suit roles that involve teamwork, leading or mentoring.", ["Teaching", "Human resources", "Public relations", "Organizational leadership", "Sales management"], "You are attentive and invested in relationships. Remember to let others care for you too.", ["Keep some time each week just for yourself", "Accept that not everyone needs your help", "Separate criticism of the work from criticism of you"]], "ENFP": ["Inspiration Spark", "Enthusiastic and curious, you find new possibilities everywhere. You connect easily and bring energy and optimism to those around you.", ["Contagious enthusiasm", "Full of ideas", "Makes friends easily", "Sees the best in people"], ["Easily distracted", "Dislikes detail and repetition", "Mood can swing"], "You enjoy creative, people-facing work with plenty of variety.", ["Marketing", "Event planning", "Education", "Media", "Entrepreneurship"], "Warm and expressive, you love sharing life and need space to explore.", ["Use lists or timers to stay focused", "Check your time and energy before saying yes", "When excitement fades, recall why you started"]], "ISTJ": ["Reliable Executor", "Steady and responsible, you take things one step at a time. You honor rules and commitments and are the person a team can count on.", ["Keeps promises", "Precise with details", "Organized planner", "Calm under pressure"], ["Resists change", "Can seem rigid", "Rarely shows emotion"], "You suit structured work that values accuracy.", ["Accounting", "Administration", "Engineering", "Quality control", "Civil service"], "You show love through actions and are deeply loyal. Try putting your care into words more often.", ["Try a new method on a small task", "Hear people out before judging", "Say thank you and share your feelings now and then"]], "ISFJ": ["Caring Protector", "Gentle and thoughtful, you quietly look after the people around you. You remember small details and value tradition and stability.", ["Attentive and caring", "Patient and dependable", "Thorough and practical", "Devoted to team and family"], ["Finds it hard to say no", "Uneasy with change", "Hurt when effort goes unseen"], "You suit steady work that involves caring for others.", ["Nursing", "Education", "Office support", "Customer service", "Social work"], "Loyal and tender, you remember what others like, and you also need to feel seen and appreciated.", ["Practice stating your own needs", "Separate others' expectations from your responsibilities", "Give new things a chance"]], "ESTJ": ["Order Keeper", "Practical and organized, you build rules and systems that keep things running. Direct and frank, you value efficiency and responsibility.", ["Strong execution", "Efficient and results-driven", "Honest and trustworthy", "Delegates clearly"], ["Inflexible about other methods", "Bluntness can pressure others", "Overlooks emotional needs"], "You suit roles with management, structure and clear results.", ["Management", "Operations", "Finance", "Law", "Military and police"], "You take commitment seriously and handle everything for your family. Allow a little more flexibility and romance.", ["Ask whether there is another way before deciding", "Lead feedback with praise", "Let others do things their own way"]], "ESFJ": ["Warm Harmonizer", "Kind and sociable, you enjoy taking care of everyone's needs. You create a warm atmosphere and hold the group together.", ["Helpful and caring", "Great with people", "Responsible and reliable", "Good at coordinating"], ["Worries about others' opinions", "Takes criticism hard", "Hides disagreement to keep the peace"], "You suit people-facing work with clear roles.", ["Education", "Healthcare", "Human resources", "Event planning", "Customer service"], "Thoughtful and fond of traditions and special occasions, you need appreciation in return.", ["You don't have to please everyone", "Treat criticism as information, not rejection", "Practice voicing a different opinion"]], "ISTP": ["Calm Craftsman", "Calm and practical, you like getting hands-on to learn how things work. You react quickly in a crisis and find workable solutions.", ["Cool under pressure", "Hands-on problem solver", "Independent and efficient", "Keen observer"], ["Avoids long-term commitments", "Rarely expresses feelings", "Bored by routine"], "You suit hands-on work with plenty of freedom.", ["Engineering", "Mechanics", "Cybersecurity", "Sports", "Emergency services"], "You give each other space and show up through actions. Try sharing more of what's inside.", ["Set one long-term goal", "Put your feelings into simple words", "Consider the impact on others before deciding"]], "ISFP": ["Free-Spirited Creator", "Gentle and sensitive, you live in the moment and enjoy life's beauty. Low-key, but with a distinctive taste of your own.", ["Strong sense of beauty", "Accepting, not judgmental", "Enjoys the present", "Adapts well"], ["Avoids planning ahead", "Withdraws from conflict", "Underestimates own abilities"], "You suit creative work in a harmonious setting.", ["Design", "Photography", "Crafts", "Beauty and styling", "Animal care"], "Tender and caring, you show love through small gestures and need respect without pressure.", ["Add some structure to important things", "Practice standing your ground in conflict", "Let others see your work and ideas"]], "ESTP": ["Action Taker", "Energetic and quick, you learn by doing. You read situations fast and act on opportunities immediately.", ["Bold and action-oriented", "Quick improviser", "Practical and results-focused", "Funny and social"], ["Impulsive about long-term effects", "Impatient with theory and plans", "Careless words can hurt"], "You suit fast-paced work with visible results.", ["Sales", "Entrepreneurship", "Coaching", "Emergency services", "Event operations"], "Fun and adventurous, you bring new experiences. Check whether your partner needs more stability.", ["Before big decisions, picture three months ahead", "Build a skill that takes time", "Think about others' feelings before speaking"]], "ESFP": ["Stage Energizer", "Cheerful and lively, you love enjoying life with others. A natural performer, you light up any room.", ["Upbeat and lively", "Reads others' needs", "Enjoys the moment", "Highly adaptable"], ["Dislikes long-term planning", "Swayed by mood and temptation", "Avoids serious issues"], "You suit people-facing roles with a chance to shine.", ["Performing arts", "Hosting", "Sales", "Hospitality", "Early childhood education"], "Warm and generous, you love sharing new experiences, and you also need to face hard conversations.", ["Set a small monthly saving or learning goal", "Handle problems first, then relax", "Make time for quiet reflection"]]}}};
+const LET={EI:['E','I'],SN:['S','N'],TF:['T','F'],JP:['J','P']};
+const DIR={EI:[1,-1,1,-1,1,-1,-1,1,-1,1,1,-1,1,-1,1],SN:[1,-1,1,-1,1,-1,1,-1,1,-1,1,-1,1,-1,1],TF:[1,-1,1,-1,1,-1,1,-1,1,-1,1,-1,1,-1,1],JP:[1,-1,1,-1,1,-1,1,-1,1,-1,1,-1,1,-1,1]};
+const Q=[];for(let i=0;i<15;i++)for(const d of ['EI','SN','TF','JP'])Q.push({d,i,dir:DIR[d][i]});
 const PER=10,PAGES=Math.ceil(Q.length/PER);
+const GVAR={NT:'--nt',NF:'--nf',SJ:'--sj',SP:'--sp'};
+const fmt=(s,o)=>s.replace(/\{(\w+)\}/g,(_,k)=>o[k]);
 
-const GROUPS={NT:['理性分析型','--nt'],NF:['價值理想型','--nf'],SJ:['穩健守護型','--sj'],SP:['靈活探索型','--sp']};
-const T={
-INTJ:['遠見策略家','獨立、理性，擅長看見長遠的全局並規劃步驟。對自己和他人的標準都高，喜歡把複雜問題變成有系統的方案。',['能看見長期趨勢並擬定策略','獨立思考，不輕易隨波逐流','學習新領域的速度快','對目標有高度決心'],['容易顯得冷淡或不好親近','對效率低落的人事缺乏耐心','可能低估情緒在決策中的份量'],'喜歡自主度高、能深入鑽研的工作，討厭沒有意義的會議與繁文縟節。',['策略規劃','系統架構','研究員','數據分析','產品經理'],'重視少數深交，表達關心的方式常是「幫你解決問題」。需要對方理解他的獨處需求。',['提出結論前，先問問別人的感受與想法','接受「夠好」有時比「完美」更有價值','練習把思考過程說出來，讓別人跟得上']],
-INTP:['原理探究者','好奇心旺盛，喜歡拆解事物背後的原理。思考彈性大，享受理論與點子本身帶來的樂趣。',['分析力強，能抓出邏輯漏洞','思想開放，願意接受新觀點','擅長抽象思考與建立模型','面對問題冷靜客觀'],['常停在思考階段，不容易落實','容易疏忽日常瑣事與細節','有時忽略他人情緒，說話太直'],'適合需要解決複雜問題、允許自由探索的環境。',['程式設計','科學研究','學術工作','工程師','遊戲設計'],'對親近的人很忠誠，但不擅長主動表達情感；喜歡能和他一起天馬行空討論的人。',['替點子設定期限和第一步行動','練習用對方聽得懂的方式說明','定期整理生活上的待辦事項']],
-ENTJ:['目標推動者','果斷、有自信，傾向帶領團隊朝目標前進。擅長組織資源、做出決策並推動執行。',['決策迅速、敢於承擔','能把願景轉化為具體計畫','溝通直接、有說服力','高效率、重視成果'],['容易顯得強勢或不耐煩','可能忽略團隊成員的情緒與步調','不太容易承認自己的脆弱'],'在能主導、有明確目標與成長空間的環境中發揮最好。',['管理職','創業','專案經理','顧問','律師'],'對關係同樣投入，會規劃共同的未來；需要學會在親密關係中放下「管理者」的角色。',['決策前多聽一輪不同的意見','肯定別人的努力，而不只是成果','留時間休息，不把每件事都當成任務']],
-ENTP:['點子激盪者','反應快、愛挑戰，喜歡從不同角度切入問題。討論和辯論對他來說是一種樂趣，常帶來新鮮的想法。',['創意多、思考靈活','口才好，能快速抓到重點','不怕挑戰傳統做法','適應力強，面對變化不慌亂'],['容易三分鐘熱度，難以堅持到完成','辯論過頭可能讓人覺得不被尊重','對例行性工作缺乏耐心'],'適合變化多、能提案與創新的工作。',['行銷企劃','創業','媒體記者','顧問','產品開發'],'有趣、充滿驚喜，喜歡能互相激盪的對象；要留意別把爭論帶進感情。',['挑一個點子，堅持做到完成','爭論前先確認對方是否想討論','把執行細節交給擅長的夥伴，並尊重他們']],
-INFJ:['洞察引導者','安靜而有深度，擅長理解他人內心，懷抱讓世界更好的理想。外表溫和，內心有堅定的原則。',['洞察力強，能讀懂言外之意','有理想、有原則','善於傾聽與給予建議','能長期投入有意義的目標'],['容易承擔太多他人的情緒而累垮','對自己要求高，追求完美','被誤解時傾向默默切斷關係'],'適合能幫助他人、符合個人價值觀的工作。',['諮商輔導','教育','社工','寫作','人才發展'],'渴望深刻、真誠的連結，不喜歡表面社交；需要對方理解他偶爾需要獨處。',['學會說「不」，保留自己的能量','把期待說出口，不要等別人猜','允許計畫和人都有不完美']],
-INFP:['理想追尋者','溫柔、富有想像力，重視真實的自我與內心的價值。對美好事物敏感，常透過創作或關懷表達自己。',['同理心強，包容不同的人','創意與想像力豐富','忠於自己的價值觀','擅長用文字或藝術表達情感'],['容易理想化，遇到落差時感到失落','面對衝突傾向逃避','不擅長安排實際事務與時間'],'適合有意義、能發揮創意且彈性較大的工作。',['設計','寫作編輯','心理相關','插畫藝術','非營利組織'],'浪漫、真誠，對感情投入很深；需要被接納真實的樣子。',['把大夢想拆成今天能完成的小步驟','練習及早表達不滿，不要累積','對自己溫柔一點，別太苛責']],
-ENFJ:['熱忱帶領者','有感染力、樂於助人，擅長凝聚大家並激發他人的潛能。很在意團體的和諧與每個人的成長。',['溝通與鼓舞人心的能力強','善於察覺團隊需求','有責任感、組織力好','真心希望他人變得更好'],['太在意別人的看法','容易忽略自己的需要','可能過度介入他人的選擇'],'適合與人合作、能帶領或培育他人的角色。',['教師講師','人力資源','公關','組織管理','業務主管'],'體貼、主動經營關係；要記得也讓對方有機會照顧你。',['每週留一段只屬於自己的時間','接受不是每個人都需要你的幫忙','遇到批評時，先分辨是對事還是對人']],
-ENFP:['靈感火花家','熱情、好奇，總能在生活中找到新的可能。善於和人建立連結，把能量和樂觀帶給身邊的人。',['熱情、有感染力','點子多、想像力豐富','善於社交、容易交朋友','能看見他人的優點'],['興趣多但容易分心','不擅長細節與重複性工作','情緒起伏可能比較大'],'喜歡有創意、能接觸人、變化多的工作。',['行銷企劃','活動策劃','教育','媒體創作','創業'],'溫暖熱情，喜歡分享生活；需要對方給他探索的空間。',['用清單或番茄鐘幫自己專注','答應之前先評估時間和精力','熱度退去時，回想當初的初衷']],
-ISTJ:['可靠執行者','踏實、負責，做事一步一腳印。重視規則與承諾，是團隊中最讓人放心的人。',['負責任、說到做到','注重細節、做事精確','有條理、善於規劃流程','冷靜穩定，面對壓力不慌'],['對改變和新方法較抗拒','可能顯得固執、不夠變通','不太擅長表達情緒'],'適合結構清楚、重視準確度的工作。',['會計財務','行政管理','工程','品質管理','公務人員'],'用實際行動表達愛，忠誠可靠；可以試著多用言語表達關心。',['試著用新方法完成一件小事','先聽完別人的想法再判斷','偶爾說出感謝與感受']],
-ISFJ:['細心守護者','溫和、體貼，默默照顧身邊的人。記得別人的小細節，重視傳統與穩定。',['細心體貼，觀察入微','可靠、有耐心','務實，能把事情做得周到','重視團隊與家庭'],['容易委屈自己、不好意思拒絕','對變動感到不安','付出不被看見時容易受傷'],'適合能照顧他人、步調穩定的工作。',['護理醫療','教育','行政支援','客戶服務','社工'],'溫柔忠誠，會默默記得對方的喜好；自己也需要被看見與感謝。',['練習直接說出自己的需求','把「別人的期待」和「自己的責任」分開','給新事物一點機會']],
-ESTJ:['秩序管理者','務實、有組織力，擅長建立規則和流程讓事情順利運作。直接坦率，重視效率與責任。',['組織與執行力強','做事有效率、重結果','誠實直接、值得信賴','能清楚分配任務'],['對不同做法缺乏彈性','說話可能太直，讓人感到壓力','容易忽略情緒面的需求'],'適合需要管理、制度與明確成果的職位。',['管理職','營運','財務','法律','軍警'],'重視承諾與責任，會為家人打點一切；可以多保留一些彈性與浪漫。',['決定前先問「還有其他做法嗎？」','給回饋時先肯定、再建議','允許別人用自己的方式完成']],
-ESFJ:['溫暖協調者','熱心、合群，樂於照顧大家的需要。擅長營造和諧氣氛，是團體裡的黏著劑。',['熱心助人、善於照顧','人際關係良好','有責任感、可靠','擅長協調與安排活動'],['太在意別人的評價','不容易接受批評','可能為了和諧而壓抑自己的意見'],'適合與人接觸、分工明確的環境。',['教育','醫護','人力資源','活動企劃','客戶服務'],'體貼周到，重視節日與儀式感；需要對方給予肯定與回應。',['不必讓每個人都滿意','把批評當成資訊，而不是否定','練習說出不同的意見']],
-ISTP:['冷靜工匠','冷靜、務實，喜歡動手了解事物如何運作。遇到突發狀況反應快，擅長找出實際的解法。',['冷靜沉著、臨危不亂','動手與解決問題的能力強','獨立、有效率','觀察力敏銳'],['不喜歡長期承諾與規劃','不擅長表達情感','容易對無聊的事失去興趣'],'適合能動手操作、自由度高的工作。',['工程技術','機械維修','資訊安全','運動相關','消防救護'],'給彼此空間，用行動陪伴；可以多分享一些內心的想法。',['試著設定一個長期目標','用簡單的話說出自己的感受','做決定前想想對他人的影響']],
-ISFP:['自在創作者','溫和、敏感，活在當下並享受生活中的美感。不愛張揚，但有自己獨特的品味與堅持。',['審美敏銳、富有藝術感','溫柔包容、不批判他人','活在當下、懂得享受','適應力好'],['不喜歡規劃未來','遇到衝突傾向退縮','容易低估自己的能力'],'適合有創作空間、氣氛和諧的工作。',['設計','攝影','手作工藝','美容美髮','動物照護'],'溫柔體貼，用行動和小驚喜表達愛；需要被尊重、不被催促。',['替重要的事加一點結構','練習在衝突中表達立場','讓別人看見你的作品和想法']],
-ESTP:['行動實踐家','精力充沛、反應快，喜歡從做中學。擅長觀察現場狀況，抓住機會立即行動。',['行動力強、敢冒險','臨場反應與談判能力好','務實，重視實際效果','幽默、善於社交'],['容易衝動，忽略長期後果','對理論與規劃缺乏耐心','可能不經意說話傷人'],'適合節奏快、能直接看到成果的工作。',['業務','創業','運動教練','警消救護','活動執行'],'有趣、愛冒險，帶來很多新鮮體驗；要留意對方是否需要更多穩定感。',['重要決定前停一下，想想三個月後','培養一項需要長期累積的技能','說話前想想對方的感受']],
-ESFP:['舞台活力家','開朗、熱情，喜歡和人一起享受生活。天生有表演魅力，能讓周遭氣氛熱絡起來。',['樂觀開朗、帶動氣氛','善於觀察他人需求','務實、懂得享受當下','適應力強'],['不喜歡長期規劃','容易受情緒與誘惑影響','面對嚴肅問題時傾向逃避'],'適合與人互動、有表現機會的工作。',['表演藝術','活動主持','業務','餐飲服務','幼兒教育'],'熱情慷慨，喜歡一起體驗新事物；也要學著面對關係中的難題。',['每月設定一個小儲蓄或學習目標','遇到問題先處理，再放鬆','給自己安靜反思的時間']]
-};
-
-const KEY='mbti16-tc-v1';
+const KEY='mbti16-tc-v1',LKEY='mbti16-lang';
 let S={view:'intro',page:0,ans:Array(Q.length).fill(null)};
 try{const s=JSON.parse(localStorage.getItem(KEY)||'null');if(s&&Array.isArray(s.ans)&&s.ans.length===Q.length)S=s;}catch(e){}
 const save=()=>{try{localStorage.setItem(KEY,JSON.stringify(S))}catch(e){}};
+function detect(){const n=(navigator.language||'').toLowerCase();if(n.startsWith('zh'))return /hans|cn|sg|my/.test(n)?'zh-Hans':'zh-Hant';return 'en';}
+let lang=null;try{lang=localStorage.getItem(LKEY)}catch(e){}
+if(!I18N[lang])lang=detect();
+let L=I18N[lang];
 const app=document.getElementById('app');
 const answered=()=>S.ans.filter(v=>v!==null).length;
 const reduce=matchMedia('(prefers-reduced-motion: reduce)').matches;
 
+function setLang(l){lang=l;L=I18N[l];try{localStorage.setItem(LKEY,l)}catch(e){}
+  document.documentElement.lang=L.meta.htmlLang;document.title=L.meta.title;
+  document.querySelectorAll('.lang button').forEach(b=>b.setAttribute('aria-pressed',b.dataset.lang===l));
+  render();}
+document.querySelectorAll('.lang button').forEach(b=>b.onclick=()=>{if(b.dataset.lang!==lang)setLang(b.dataset.lang)});
+
 function render(){({intro,quiz,result})[S.view]();}
 
 function intro(){
-  const n=answered();
+  const n=answered(),u=L.ui;
   app.innerHTML=`<section class="intro">
-    <div class="eyebrow">免費・繁體中文・約 10–15 分鐘</div>
-    <h1>十六型人格測驗</h1>
-    <p class="lead">共 60 題。請依照你「平常、自然的樣子」作答，而不是你希望自己成為的樣子。沒有對錯，第一直覺通常最準。</p>
-    <div class="facts"><span><b>60</b> 題</span><span><b>4</b> 個向度</span><span><b>16</b> 種類型</span><span>作答進度會自動保存在此瀏覽器</span></div>
-    <div class="dims">${Object.values(DIMS).map(d=>`<div class="dim"><div class="pair">${d.a} ${d.an} ／ ${d.b} ${d.bn}</div><div class="q">${d.q}</div></div>`).join('')}</div>
+    <div class="eyebrow">${u.eyebrow}</div>
+    <h1>${L.meta.title}</h1>
+    <p class="lead">${u.lead}</p>
+    <div class="facts">${u.facts.map(f=>`<span>${f}</span>`).join('')}</div>
+    <div class="dims">${Object.keys(LET).map(k=>{const d=L.dims[k];return `<div class="dim"><div class="pair">${LET[k][0]} ${d.an} / ${LET[k][1]} ${d.bn}</div><div class="q">${d.q}</div></div>`}).join('')}</div>
     <div class="row">
-      <button class="btn" id="go">${n?`繼續作答（已完成 ${n} 題）`:'開始測驗'}</button>
-      ${n?'<button class="btn ghost" id="reset">重新開始</button>':''}
+      <button class="btn" id="go">${n?fmt(u.resume,{n}):u.start}</button>
+      ${n?`<button class="btn ghost" id="reset">${u.restart}</button>`:''}
     </div>
-    <p class="note">本測驗依據榮格心理類型理論設計，供自我探索與教學討論使用，並非官方 MBTI®，也不適合作為招募或診斷依據。</p>
+    <p class="note">${u.disclaimer}</p>
   </section>`;
   document.getElementById('go').onclick=()=>{S.view=n===Q.length?'result':'quiz';save();render();scrollTo(0,0)};
   const r=document.getElementById('reset');if(r)r.onclick=reset;
@@ -192,16 +179,16 @@ function reset(){S={view:'quiz',page:0,ans:Array(Q.length).fill(null)};save();re
 
 const VALS=[3,2,1,0,-1,-2,-3];
 function quiz(){
-  const start=S.page*PER,items=Q.slice(start,start+PER);
-  app.innerHTML=`<div class="bar"><div class="meta"><span>第 ${S.page+1} / ${PAGES} 頁</span><span id="cnt"></span></div><div class="track"><div class="fill" id="fill"></div></div></div>
+  const u=L.ui,start=S.page*PER,items=Q.slice(start,start+PER);
+  app.innerHTML=`<div class="bar"><div class="meta"><span>${fmt(u.pageOf,{p:S.page+1,n:PAGES})}</span><span id="cnt"></span></div><div class="track"><div class="fill" id="fill"></div></div></div>
   <div class="qlist">${items.map((q,k)=>{const i=start+k;return `<div class="qi${S.ans[i]!==null?' done':''}" id="q${i}">
-    <p class="text"><span class="num">${i+1}</span>${q.t}</p>
-    <div class="scale"><span class="lab a">同意</span>
-      <div class="dots" role="radiogroup" aria-label="第${i+1}題">${VALS.map(v=>{const c=v>0?'ag':v<0?'di':'ne';return `<button class="dot s${Math.abs(v)} ${c}${S.ans[i]===v?' on':''}" role="radio" aria-checked="${S.ans[i]===v}" aria-label="${['非常同意','同意','有點同意','中立','有點不同意','不同意','非常不同意'][3-v]}" data-i="${i}" data-v="${v}"></button>`}).join('')}</div>
-      <span class="lab d">不同意</span></div></div>`}).join('')}</div>
-  <div class="nav"><button class="btn ghost" id="prev">${S.page?'上一頁':'回首頁'}</button><button class="btn" id="next">${S.page===PAGES-1?'看結果':'下一頁'}</button></div>
-  <p class="note" style="margin-top:12px;text-align:center">中間的小圓圈代表「中立」，請盡量少用。</p>`;
-  const upd=()=>{const n=answered();document.getElementById('cnt').textContent=`已完成 ${n} / ${Q.length}`;document.getElementById('fill').style.width=(n/Q.length*100)+'%';
+    <p class="text"><span class="num">${i+1}</span>${L.q[q.d][q.i]}</p>
+    <div class="scale"><span class="lab a">${u.agree}</span>
+      <div class="dots" role="radiogroup" aria-label="${fmt(u.qLabel,{n:i+1})}">${VALS.map(v=>{const c=v>0?'ag':v<0?'di':'ne';return `<button class="dot s${Math.abs(v)} ${c}${S.ans[i]===v?' on':''}" role="radio" aria-checked="${S.ans[i]===v}" aria-label="${u.likert[3-v]}" data-i="${i}" data-v="${v}"></button>`}).join('')}</div>
+      <span class="lab d">${u.disagree}</span></div></div>`}).join('')}</div>
+  <div class="nav"><button class="btn ghost" id="prev">${S.page?u.prev:u.home}</button><button class="btn" id="next">${S.page===PAGES-1?u.see:u.next}</button></div>
+  <p class="note" style="margin-top:12px;text-align:center">${u.neutralHint}</p>`;
+  const upd=()=>{const n=answered();document.getElementById('cnt').textContent=fmt(u.done,{n,t:Q.length});document.getElementById('fill').style.width=(n/Q.length*100)+'%';
     document.getElementById('next').disabled=items.some((_,k)=>S.ans[start+k]===null);};
   upd();
   app.querySelectorAll('.dot').forEach(b=>b.onclick=()=>{
@@ -217,83 +204,94 @@ function quiz(){
 
 function score(){
   const out={};
-  for(const d in DIMS){let s=0;Q.forEach((q,i)=>{if(q.d===d)s+=(S.ans[i]||0)*q.dir});
-    const pa=Math.round(50+s/45*50);out[d]={pa,pb:100-pa,win:pa>=50?DIMS[d].a:DIMS[d].b};}
+  for(const d in LET){let s=0;Q.forEach((q,i)=>{if(q.d===d)s+=(S.ans[i]||0)*q.dir});
+    const pa=Math.round(50+s/45*50);out[d]={pa,pb:100-pa,win:pa>=50?LET[d][0]:LET[d][1]};}
   return out;
 }
-const level=p=>{const x=Math.abs(p-50);return x<10?'輕微偏好':x<25?'中等偏好':x<40?'明顯偏好':'非常明顯'};
+const level=p=>{const x=Math.abs(p-50);return L.ui.levels[x<10?0:x<25?1:x<40?2:3]};
 function group(code){return code[1]==='N'?(code[2]==='T'?'NT':'NF'):(code[3]==='J'?'SJ':'SP');}
 
 function result(){
-  const sc=score(),code=Object.keys(DIMS).map(d=>sc[d].win).join(''),t=T[code],g=group(code);
-  app.style.setProperty('--grp',`var(${GROUPS[g][1]})`);
-  const meters=Object.entries(DIMS).map(([k,d])=>{const r=sc[k],aw=r.win===d.a;const p=aw?r.pa:r.pb;
+  const u=L.ui,sc=score(),code=Object.keys(LET).map(d=>sc[d].win).join(''),t=L.types[code],g=group(code),sep=L.meta.sep,co=L.meta.colon;
+  app.style.setProperty('--grp',`var(${GVAR[g]})`);
+  const meters=Object.keys(LET).map(k=>{const d=L.dims[k],[A,B]=LET[k],r=sc[k],aw=r.win===A;const p=aw?r.pa:r.pb;
     const fill=aw?`right:50%;width:${p-50}%`:`left:50%;width:${p-50}%`;
-    return `<div class="meter"><div class="top"><span class="${aw?'win':''}"><b>${d.a}</b> ${d.an} ${r.pa}%</span><span style="color:var(--muted)">${level(p)}</span><span class="${aw?'':'win'}">${r.pb}% ${d.bn} <b>${d.b}</b></span></div>
+    return `<div class="meter"><div class="top2"><span class="${aw?'win':''}"><b>${A}</b> ${d.an} ${r.pa}%</span><span style="color:var(--muted)">${level(p)}</span><span class="${aw?'':'win'}">${r.pb}% ${d.bn} <b>${B}</b></span></div>
     <div class="mtrack"><div class="mfill" style="${fill}"></div><div class="mid"></div></div>
-    <p class="desc">${aw?d.ad:d.bd}${Math.abs(p-50)<10?' 這個向度兩邊很接近，你可能會依情境在兩者之間切換。':''}</p></div>`}).join('');
+    <p class="desc">${aw?d.ad:d.bd}${Math.abs(p-50)<10?' '+u.close:''}</p></div>`}).join('');
   app.innerHTML=`<section class="hero">
-    <span class="chip">${GROUPS[g][0]}</span>
+    <span class="chip">${L.groups[g]}</span>
     <div class="code">${code}</div>
     <h1>${t[0]}</h1>
     <p class="sum">${t[1]}</p></section>
-  <section class="sec"><h2>四個向度的分數</h2>${meters}</section>
+  <section class="sec"><h2>${u.secScores}</h2>${meters}</section>
   <section class="sec"><div class="cols">
-    <div><p class="h3">你的優勢</p><ul class="list">${t[2].map(x=>`<li>${x}</li>`).join('')}</ul></div>
-    <div><p class="h3">需要留意的盲點</p><ul class="list">${t[3].map(x=>`<li>${x}</li>`).join('')}</ul></div></div></section>
-  <section class="sec"><h2>工作與職涯</h2><p>${t[4]}</p><div class="tags">${t[5].map(x=>`<span class="tag">${x}</span>`).join('')}</div>
-    <p class="note">職業僅供參考。任何類型都能在各種領域表現出色，興趣與能力同樣重要。</p></section>
-  <section class="sec"><h2>人際與感情</h2><p>${t[6]}</p></section>
-  <section class="sec"><h2>成長建議</h2><ul class="list">${t[7].map(x=>`<li>${x}</li>`).join('')}</ul></section>
-  <section class="sec"><h2>結果圖卡</h2><p class="note">手機請長按圖片選「儲存圖片」；電腦請在圖片上按右鍵「另存圖片」。</p><div class="card"><img id="cardimg" alt="${code} ${t[0]} 結果圖卡"></div></section>
-  <section class="sec"><h2>文字版解析</h2><p class="note">複製下方文字，即可貼到筆記或傳給朋友。</p>
+    <div><p class="h3">${u.strengths}</p><ul class="list">${t[2].map(x=>`<li>${x}</li>`).join('')}</ul></div>
+    <div><p class="h3">${u.blind}</p><ul class="list">${t[3].map(x=>`<li>${x}</li>`).join('')}</ul></div></div></section>
+  <section class="sec"><h2>${u.work}</h2><p>${t[4]}</p><div class="tags">${t[5].map(x=>`<span class="tag">${x}</span>`).join('')}</div>
+    <p class="note">${u.careerNote}</p></section>
+  <section class="sec"><h2>${u.rel}</h2><p>${t[6]}</p></section>
+  <section class="sec"><h2>${u.growth}</h2><ul class="list">${t[7].map(x=>`<li>${x}</li>`).join('')}</ul></section>
+  <section class="sec"><h2>${u.cardH}</h2><p class="note">${u.cardNote}</p><div class="card"><img id="cardimg" alt="${code} ${t[0]} ${u.cardAlt}"></div></section>
+  <section class="sec"><h2>${u.textH}</h2><p class="note">${u.textNote}</p>
     <textarea id="txt" readonly></textarea>
-    <div class="row"><button class="btn" id="copy">複製解析</button><button class="btn ghost" id="redo">重新測驗</button><button class="btn ghost" id="edit">修改答案</button></div>
+    <div class="row"><button class="btn" id="copy">${u.copy}</button><button class="btn ghost" id="redo">${u.redo}</button><button class="btn ghost" id="edit">${u.edit}</button></div>
     <p class="toast" id="toast" aria-live="polite"></p>
-    <p class="note">提醒：人格類型描述的是偏好，不是能力或限制。結果可能隨年齡、環境與心境改變，建議當作認識自己的起點。</p></section>`;
-  const txt=`【十六型人格測驗結果】\n類型：${code}｜${t[0]}（${GROUPS[g][0]}）\n${t[1]}\n\n向度分數：\n`+
-    Object.entries(DIMS).map(([k,d])=>`・${d.a} ${d.an} ${sc[k].pa}% ／ ${d.b} ${d.bn} ${sc[k].pb}%`).join('\n')+
-    `\n\n優勢：${t[2].join('、')}\n盲點：${t[3].join('、')}\n工作：${t[4]}\n適合方向：${t[5].join('、')}\n人際：${t[6]}\n成長建議：\n${t[7].map((x,i)=>`${i+1}. ${x}`).join('\n')}`;
+    <p class="note">${u.finalNote}</p></section>`;
+  const txt=`${u.txtTitle}\n${u.txtType}${co}${code} | ${t[0]} (${L.groups[g]})\n${t[1]}\n\n${u.txtScores}${co}\n`+
+    Object.keys(LET).map(k=>`- ${LET[k][0]} ${L.dims[k].an} ${sc[k].pa}% / ${LET[k][1]} ${L.dims[k].bn} ${sc[k].pb}%`).join('\n')+
+    `\n\n${u.txtStr}${co}${t[2].join(sep)}\n${u.txtBlind}${co}${t[3].join(sep)}\n${u.txtWork}${co}${t[4]}\n${u.txtCareer}${co}${t[5].join(sep)}\n${u.txtRel}${co}${t[6]}\n${u.txtGrowth}${co}\n${t[7].map((x,i)=>`${i+1}. ${x}`).join('\n')}`;
   const ta=document.getElementById('txt');ta.value=txt;
   document.getElementById('copy').onclick=()=>{const toast=document.getElementById('toast');
-    navigator.clipboard.writeText(txt).then(()=>toast.textContent='已複製到剪貼簿').catch(()=>{ta.focus();ta.select();toast.textContent='已選取文字，請按 Ctrl/⌘ + C 複製'});};
+    navigator.clipboard.writeText(txt).then(()=>toast.textContent=u.copied).catch(()=>{ta.focus();ta.select();toast.textContent=u.selected});};
   document.getElementById('redo').onclick=reset;
-  makeCard(code,t,g,sc).then(u=>{document.getElementById('cardimg').src=u}).catch(()=>{});
+  const forLang=lang;
+  makeCard(code,t,g,sc).then(url=>{const im=document.getElementById('cardimg');if(im&&forLang===lang)im.src=url}).catch(()=>{});
   document.getElementById('edit').onclick=()=>{S.view='quiz';S.page=0;save();render();scrollTo(0,0)};
 }
+
 function rr(x,X,Y,w,h,r){x.beginPath();x.moveTo(X+r,Y);x.arcTo(X+w,Y,X+w,Y+h,r);x.arcTo(X+w,Y+h,X,Y+h,r);x.arcTo(X,Y+h,X,Y,r);x.arcTo(X,Y,X+w,Y,r);x.closePath();}
-function wrapText(x,text,maxW){const P='，。、；：！？）」』';const lines=[];let cur='';for(const ch of text){if(cur&&!P.includes(ch)&&x.measureText(cur+ch).width>maxW){lines.push(cur);cur=ch;}else cur+=ch;}if(cur)lines.push(cur);return lines;}
+function wrapText(x,text,maxW,en){const lines=[];let cur='';
+  if(en){for(const w of text.split(' ')){const tryS=cur?cur+' '+w:w;if(cur&&x.measureText(tryS).width>maxW){lines.push(cur);cur=w;}else cur=tryS;}}
+  else{const P='，。、；：！？）」』”';for(const ch of text){if(cur&&!P.includes(ch)&&x.measureText(cur+ch).width>maxW){lines.push(cur);cur=ch;}else cur+=ch;}}
+  if(cur)lines.push(cur);return lines;}
 async function makeCard(code,t,g,sc){
   const W=1080,H=1350,pad=80,c=document.createElement('canvas');c.width=W;c.height=H;const x=c.getContext('2d');
-  const DISP='"LXGW WenKai TC","Noto Sans TC",serif',BODY='"Noto Sans TC","PingFang TC","Microsoft JhengHei",sans-serif',CODE='"Space Grotesk",sans-serif';
-  try{await Promise.all(['700 72px '+DISP,'700 220px '+CODE,'400 32px '+BODY,'700 30px '+BODY].map(f=>document.fonts.load(f,'測驗型人格ABCDEFGHIJ0123')));}catch(e){}
+  const cs=getComputedStyle(document.documentElement),DISP=cs.getPropertyValue('--f-display').trim(),BODY=cs.getPropertyValue('--f-body').trim(),CODE='"Space Grotesk",sans-serif';
+  const en=lang==='en',u=L.ui;
+  try{await Promise.all(['700 72px '+DISP,'700 220px '+CODE,'400 32px '+BODY,'500 28px '+BODY,'700 30px '+BODY].map(f=>document.fonts.load(f,t[0]+t[1]+L.meta.title+'ABCDEFGHIJ0123')));}catch(e){}
   const col={NT:'#6a4c93',NF:'#2f8f6b',SJ:'#2f6fa8',SP:'#c27f12'}[g],ink='#1a2130',muted='#5d6779';
   x.fillStyle='#f7f8fb';x.fillRect(0,0,W,H);
   x.globalAlpha=.08;x.fillStyle=col;x.beginPath();x.arc(W-40,150,320,0,Math.PI*2);x.fill();x.globalAlpha=1;
   x.fillStyle=col;x.fillRect(0,0,W,14);
   x.textBaseline='middle';
-  x.font='500 30px '+BODY;x.fillStyle=muted;x.textAlign='left';x.fillText('十六型人格測驗',pad,104);
-  x.font='700 28px '+BODY;const gw=x.measureText(GROUPS[g][0]).width+44;rr(x,W-pad-gw,80,gw,50,25);x.strokeStyle=col;x.lineWidth=3;x.stroke();x.fillStyle=col;x.textAlign='center';x.fillText(GROUPS[g][0],W-pad-gw/2,106);
+  x.font='500 30px '+BODY;x.fillStyle=muted;x.textAlign='left';x.fillText(L.meta.title,pad,104);
+  x.font='700 28px '+BODY;const gw=x.measureText(L.groups[g]).width+44;rr(x,W-pad-gw,80,gw,50,25);x.strokeStyle=col;x.lineWidth=3;x.stroke();x.fillStyle=col;x.textAlign='center';x.fillText(L.groups[g],W-pad-gw/2,106);
   x.textAlign='left';x.textBaseline='alphabetic';
   x.font='700 220px '+CODE;x.fillStyle=col;x.fillText(code,pad-8,360);
-  x.font='700 72px '+DISP;x.fillStyle=ink;x.fillText(t[0],pad,478);
-  x.font='400 32px '+BODY;x.fillStyle=muted;wrapText(x,t[1],W-pad*2).slice(0,3).forEach((l,i)=>x.fillText(l,pad,552+i*52));
+  let ns=en?64:72;x.font='700 '+ns+'px '+DISP;while(x.measureText(t[0]).width>W-pad*2&&ns>40){ns-=4;x.font='700 '+ns+'px '+DISP;}
+  x.fillStyle=ink;x.fillText(t[0],pad,478);
+  let fs=en?30:32,lines;do{x.font='400 '+fs+'px '+BODY;lines=wrapText(x,t[1],W-pad*2,en);if(lines.length<=3)break;fs-=2;}while(fs>22);
+  x.fillStyle=muted;lines.slice(0,3).forEach((l,i)=>x.fillText(l,pad,552+i*Math.round(fs*1.6)));
   x.fillStyle='#dde2ea';x.fillRect(pad,680,W-pad*2,2);
   let y=738;const bw=W-pad*2;
-  for(const [k,d] of Object.entries(DIMS)){const r=sc[k],aw=r.win===d.a,p=aw?r.pa:r.pb;
-    x.font=(aw?'700 ':'400 ')+'30px '+BODY;x.fillStyle=aw?col:muted;x.textAlign='left';x.fillText(d.a+' '+d.an+' '+r.pa+'%',pad,y);
-    x.font=(aw?'400 ':'700 ')+'30px '+BODY;x.fillStyle=aw?muted:col;x.textAlign='right';x.fillText(r.pb+'% '+d.bn+' '+d.b,W-pad,y);
+  for(const k of Object.keys(LET)){const d=L.dims[k],[A,B]=LET[k],r=sc[k],aw=r.win===A,p=aw?r.pa:r.pb;
+    x.font=(aw?'700 ':'400 ')+'30px '+BODY;x.fillStyle=aw?col:muted;x.textAlign='left';x.fillText(A+' '+d.an+' '+r.pa+'%',pad,y);
+    x.font=(aw?'400 ':'700 ')+'30px '+BODY;x.fillStyle=aw?muted:col;x.textAlign='right';x.fillText(r.pb+'% '+d.bn+' '+B,W-pad,y);
     x.font='400 24px '+BODY;x.fillStyle=muted;x.textAlign='center';x.fillText(level(p),W/2,y);
     rr(x,pad,y+18,bw,16,8);x.fillStyle='#e3e7ee';x.fill();
     const fw=(p-50)/100*bw;x.fillStyle=col;if(fw>0){if(aw)x.fillRect(W/2-fw,y+18,fw,16);else x.fillRect(W/2,y+18,fw,16);}
     x.fillStyle='#f7f8fb';x.fillRect(W/2-2,y+12,4,28);y+=88;}
-  x.textAlign='left';x.font='700 30px '+DISP;x.fillStyle=ink;x.fillText('你的優勢',pad,1098);
-  x.font='500 28px '+BODY;let tx=pad,ty=1124;
-  for(const s of t[2]){const w=x.measureText(s).width+40;if(tx+w>W-pad){tx=pad;ty+=70;}rr(x,tx,ty,w,54,10);x.fillStyle=col+'1f';x.fill();x.fillStyle=col;x.textBaseline='middle';x.fillText(s,tx+20,ty+28);x.textBaseline='alphabetic';tx+=w+14;}
-  x.font='400 22px '+BODY;x.fillStyle=muted;x.textAlign='center';x.fillText('以榮格心理類型理論為基礎・僅供自我探索參考',W/2,H-40);
+  x.textAlign='left';x.font='700 30px '+DISP;x.fillStyle=ink;x.fillText(u.strengths,pad,1098);
+  let tf=28,place;
+  const layout=()=>{x.font='500 '+tf+'px '+BODY;const out=[];let tx=pad,ty=1124,rows=1;const h=tf+26;
+    for(const s of t[2]){const w=x.measureText(s).width+40;if(tx+w>W-pad){tx=pad;ty+=h+16;rows++;}out.push([s,tx,ty,w,h]);tx+=w+14;}return [out,rows];};
+  let rows;do{[place,rows]=layout();if(rows<=2)break;tf-=2;}while(tf>20);
+  for(const [s,tx,ty,w,h] of place){rr(x,tx,ty,w,h,10);x.fillStyle=col+'1f';x.fill();x.fillStyle=col;x.textBaseline='middle';x.fillText(s,tx+20,ty+h/2+1);x.textBaseline='alphabetic';}
+  x.font='400 22px '+BODY;x.fillStyle=muted;x.textAlign='center';x.fillText(u.cardFooter,W/2,H-40);
   return c.toDataURL('image/png');
 }
-render();
+setLang(lang);
 </script>
 
 </body>
